@@ -1,23 +1,28 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { net, contextBridge, ipcRenderer } = require('electron');
+
+const validChannels = [
+  'httpGet'
+];
+
 
 contextBridge.exposeInMainWorld('electron', {
-  ipcRenderer: {
-    myPing() {
-      ipcRenderer.send('ipc-example', 'ping');
+  ipc: {
+    invoke(event, ...args) {
+      return ipcRenderer.invoke(event, args);
+    },
+
+    send(event, arg) {
+      ipcRenderer.send(event, arg);
     },
 
     on(channel, func) {
-      const validChannels = ['ipc-example'];
       if (validChannels.includes(channel)) {
-        // Deliberately strip event as it includes `sender`
         ipcRenderer.on(channel, (event, ...args) => func(...args));
       }
     },
 
     once(channel, func) {
-      const validChannels = ['ipc-example'];
       if (validChannels.includes(channel)) {
-        // Deliberately strip event as it includes `sender`
         ipcRenderer.once(channel, (event, ...args) => func(...args));
       }
     },
