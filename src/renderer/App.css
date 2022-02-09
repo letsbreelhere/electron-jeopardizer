@@ -3,9 +3,44 @@ $yellow: #d7a156;
 
 body {
   position: relative;
-  color: $yellow;
+  color: white;
   height: 100vh;
   background: $blue;
   font-family: sans-serif;
   overflow-y: hidden;
+}
+
+ul {
+  padding: 0;
+}
+
+ul.categories {
+  height: 100vh;
+  text-align: center;
+  display: flex;
+  align-items: start;
+  list-style-type: none;
+  li {
+    height: 100%;
+    width: calc(100%/6);
+    h1 {
+      margin: 0;
+      height: 6rem;
+    }
+
+    ul.clues {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: calc(100% - 6rem);
+      li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 20%;
+      }
+    }
+  }
 }

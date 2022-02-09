@@ -1,10 +1,30 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import { parse } from 'node-html-parser';
 import parseJ from './JarchiveParser';
 
+const Board = ({ round }) => {
+  return (
+    <ul className="categories">
+      {Object.entries(round).map(([category, clues]) => (
+        <li>
+          <h1>{category}</h1>
+          <ul className="clues">
+            {clues.map(clue => (
+              <li>
+              ${clue.value}
+              </li>
+            ))}
+          </ul>
+        </li>
+    ))}
+    </ul>
+  )
+}
+
 const Startup = () => {
+  const [game, setGame] = useState(null);
   useEffect(() => {
     const eff = async () => {
       const clueHtml = await electron.ipc.invoke(
@@ -17,14 +37,17 @@ const Startup = () => {
         `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
       );
       const parsed = await parseJ(clueHtml, responseHtml);
-      console.warn(parsed)
+      setGame(parsed);
     }
     eff();
   }, [])
 
+  if (!game) return null;
+
   return (
-    <div>
-    </div>
+    <Board
+      round={game.firstRound}
+    />
   );
 };
 

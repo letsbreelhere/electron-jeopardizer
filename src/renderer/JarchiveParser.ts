@@ -1,7 +1,12 @@
 import { parse } from 'node-html-parser';
 
+const htmlDecode = (input) => {
+  var doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+}
+
 const parseRound = (clueRoot, responseRoot) => {
-  const categories: Array<string> = clueRoot.querySelectorAll('td.category_name').map(c => c.rawText);
+  const categories: Array<string> = clueRoot.querySelectorAll('td.category_name').map(c => htmlDecode(c.rawText));
   const clues = clueRoot.querySelectorAll('td.clue');
 
   let result: Object<string, object> = {};
@@ -10,7 +15,7 @@ const parseRound = (clueRoot, responseRoot) => {
   })
 
   const responses = responseRoot.querySelectorAll('td.clue').map(response =>
-    response.querySelector('.correct_response')?.rawText || 'UNKNOWN'
+    htmlDecode(response.querySelector('.correct_response')?.rawText) || 'UNKNOWN'
   );
 
   clues.forEach((clue, i: number) => {
@@ -23,7 +28,7 @@ const parseRound = (clueRoot, responseRoot) => {
       ...result[category],
       {
         value,
-        clue: clue.querySelector('.clue_text').rawText,
+        text: htmlDecode(clue.querySelector('.clue_text').rawText),
         response: responses[i],
       }
     ]
@@ -33,21 +38,15 @@ const parseRound = (clueRoot, responseRoot) => {
 }
 
 const parseFinalJeopardy = (clueRoot, responseRoot) => {
-  const category = clueRoot.querySelector('.category_name').rawText
-  const clue = clueRoot.querySelector('.clue_text').rawText
-  const response = responseRoot.querySelector('em.correct_response').rawText
-  return { category, clue, response }
+  const category = htmlDecode(clueRoot.querySelector('.category_name').rawText)
+  const text = htmlDecode(clueRoot.querySelector('.clue_text').rawText)
+  const response = htmlDecode(responseRoot.querySelector('em.correct_response').rawText)
+  return { category, text, response }
 }
 
 export default async (clueHtml, responseHtml) => {
   const responseRoot = await parse(responseHtml);
   const clueRoot = await parse(clueHtml);
-
-  console.warn(
-    responseRoot.querySelector('#jeopardy_round'),
-    responseRoot.querySelector('#double_jeopardy_round'),
-    responseRoot.querySelector('#final_jeopardy_round'),
-  )
 
   const firstRound = parseRound(
     clueRoot.querySelector('#jeopardy_round'),
