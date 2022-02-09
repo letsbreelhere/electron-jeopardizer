@@ -8,10 +8,12 @@ body {
   background: $blue;
   font-family: sans-serif;
   overflow-y: hidden;
+  margin: 0;
 }
 
 ul {
   padding: 0;
+  margin: 0;
 }
 
 ul.categories {
@@ -26,10 +28,13 @@ ul.categories {
     h1 {
       margin: 0;
       height: 6rem;
+      border: 12px solid black;
+      border-right: 0;
     }
 
     ul.clues {
       list-style-type: none;
+      border-left: 12px solid black;
       display: flex;
       flex-direction: column;
       justify-content: space-between;

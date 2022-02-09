@@ -5,7 +5,7 @@ const htmlDecode = (input) => {
   return doc.documentElement.textContent;
 }
 
-const parseRound = (clueRoot, responseRoot) => {
+const parseRound = (clueRoot, responseRoot, double) => {
   const categories: Array<string> = clueRoot.querySelectorAll('td.category_name').map(c => htmlDecode(c.rawText));
   const clues = clueRoot.querySelectorAll('td.clue');
 
@@ -19,10 +19,13 @@ const parseRound = (clueRoot, responseRoot) => {
   );
 
   clues.forEach((clue, i: number) => {
-    const col = Math.floor(i%6);
+    const col = i%6;
     const category = categories[col];
     let value = clue.querySelector('.clue_value');
-    value = value ? Number(value.rawText.slice(1)) : 'DAILY_DOUBLE';
+    const dailyDouble = !value;
+    if (value) {
+      value = Number(value.rawText.slice(1));
+    }
 
     result[category] = [
       ...result[category],
@@ -30,9 +33,22 @@ const parseRound = (clueRoot, responseRoot) => {
         value,
         text: htmlDecode(clue.querySelector('.clue_text').rawText),
         response: responses[i],
+        dailyDouble,
       }
     ]
   })
+
+  // Fix daily doubles
+  Object.entries(result).forEach(([category, clues]) => {
+    clues.forEach((clue, i) => {
+      if (!clue.value) {
+        const value = Object.values(result).map(cs => cs[i].value).find(v => v);
+        result[category][i].value = value;
+      }
+    })
+  });
+
+  console.warn(result)
 
   return result;
 }

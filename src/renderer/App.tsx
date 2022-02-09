@@ -1,6 +1,6 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import './App.css';
+import './App.scss';
 import { parse } from 'node-html-parser';
 import parseJ from './JarchiveParser';
 
