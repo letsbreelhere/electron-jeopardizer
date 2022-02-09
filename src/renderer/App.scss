@@ -1,6 +1,8 @@
 $blue: #0a0080;
 $yellow: #d7a156;
+$white: #f6faff;
 $border-size: 10px;
+$black: #050505;
 
 @font-face {
     font-family: 'Swiss 911';
@@ -12,9 +14,11 @@ $border-size: 10px;
     src: url('../../assets/fonts/Korinna-Regular.otf');
 }
 
+::selection { background: transparent; }
+
 body {
   position: relative;
-  color: white;
+  color: $white;
   height: 100vh;
   background: $blue;
   font-family: sans-serif;
@@ -27,6 +31,19 @@ ul {
   margin: 0;
 }
 
+a {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  &:active, .open {
+    background: lighten($blue, 10%);
+    color: saturate($yellow, 100%);
+  }
+}
+
 ul.categories {
   font-family: 'Swiss 911';
   height: 100vh;
@@ -35,7 +52,7 @@ ul.categories {
   align-items: start;
   list-style-type: none;
   &:last-child {
-    border-right: $border-size solid black;
+    border-right: $border-size solid $black;
   }
   li {
     width: 100%;
@@ -46,7 +63,7 @@ ul.categories {
       justify-content: center;
       align-items: center;
       margin: 0;
-      border: $border-size solid black;
+      border: $border-size solid $black;
       border-right: 0;
       font-size: 52px;
       letter-spacing: 1px;
@@ -55,8 +72,9 @@ ul.categories {
     }
 
     ul.clues {
+      text-shadow: 10px 10px $black;
       list-style-type: none;
-      border-left: $border-size solid black;
+      border-left: $border-size solid $black;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -70,11 +88,39 @@ ul.categories {
         align-items: center;
         height: 20%;
         width: 100%;
-        border-bottom: $border-size solid black;
+        border-bottom: $border-size solid $black;
         &:last-child {
           margin-bottom: 24px;
         }
       }
     }
+  }
+}
+
+.clue-shroud {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,50%);
+}
+
+.clue-modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 75vw;
+  height: 80vh;
+  background: $blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Korinna Regular';
+  font-size: 72px;
+  text-transform: uppercase;
+
+  .clue-text {
+    text-align: center;
+    margin: calc(33%/2);
   }
 }

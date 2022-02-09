@@ -4,7 +4,7 @@ import './App.scss';
 import { parse } from 'node-html-parser';
 import parseJ from './JarchiveParser';
 
-const Board = ({ round }) => {
+const Board = ({ round, onPickClue }) => {
   return (
     <ul className="categories">
       {Object.entries(round).map(([category, clues]) => (
@@ -13,7 +13,9 @@ const Board = ({ round }) => {
           <ul className="clues">
             {clues.map(clue => (
               <li>
-              ${clue.value}
+                <a onClick={() => onPickClue(clue)}>
+                  ${clue.value}
+                </a>
               </li>
             ))}
           </ul>
@@ -23,8 +25,20 @@ const Board = ({ round }) => {
   )
 }
 
+const ClueModal = ({ clue, onClose }) => (
+  <>
+    <div className="clue-shroud" onClick={onClose} />
+    <div className="clue-modal">
+      <div className="clue-text">
+        {clue.text}
+      </div>
+    </div>
+  </>
+)
+
 const Startup = () => {
   const [game, setGame] = useState(null);
+  const [clue, setClue] = useState(null);
   useEffect(() => {
     const eff = async () => {
       const clueHtml = await electron.ipc.invoke(
@@ -45,9 +59,15 @@ const Startup = () => {
   if (!game) return null;
 
   return (
-    <Board
-      round={game.firstRound}
-    />
+    <>
+      {clue && (
+        <ClueModal clue={clue} onClose={() => setClue(null)}/>
+      )}
+      <Board
+        round={game.firstRound}
+        onPickClue={setClue}
+      />
+    </>
   );
 };
 
