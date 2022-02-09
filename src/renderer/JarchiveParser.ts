@@ -33,6 +33,10 @@ const parseRound = (clueRoot, responseRoot) => {
 }
 
 const parseFinalJeopardy = (clueRoot, responseRoot) => {
+  const category = clueRoot.querySelector('.category_name').rawText
+  const clue = clueRoot.querySelector('.clue_text').rawText
+  const response = responseRoot.querySelector('em.correct_response').rawText
+  return { category, clue, response }
 }
 
 export default async (clueHtml, responseHtml) => {
