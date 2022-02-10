@@ -27,14 +27,17 @@ const parseRound = (clueRoot, responseRoot, double) => {
       value = Number(value.rawText.slice(1));
     }
 
+    const text = clue.querySelector('.clue_text')?.rawText
+
     result[category] = [
       ...result[category],
       {
         id: i,
         value,
-        text: htmlDecode(clue.querySelector('.clue_text').rawText),
+        text,
         response: responses[i],
         dailyDouble,
+        unrevealed: !text,
       }
     ]
   })
