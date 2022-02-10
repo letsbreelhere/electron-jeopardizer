@@ -1,5 +1,5 @@
 export const initialState = (playerCount, game) => ({
-  players: (new Array(playerCount)).map((_, i) => ({
+  players: (new Array(playerCount).fill({})).map((_, i) => ({
     name: `Player ${i+1}`,
     score: 0
   })),
@@ -11,42 +11,54 @@ export const initialState = (playerCount, game) => ({
 });
 
 export const reducer = (state, action) => {
-  let newState = state;
+  let newState = JSON.parse(JSON.stringify(state));
+  let clue;
 
   switch (action.type) {
     case 'SET_SCORE':
-      state.players[action.index].score = action.value;
+      newState.players[action.index].score = action.value;
+      break;
+
+    case 'SELECT_CLUE':
+      newState.category = action.category;
+      newState.clueIndex = action.index;
       break;
 
     case 'CHANGE_NAME':
-      state.players[action.index].name = action.name;
+      newState.players[action.index].name = action.name;
       break;
 
     case 'BUZZ_IN':
-      state.buzzingIn = action.index;
+      newState.buzzingIn = action.index;
       break;
 
     case 'WRONG_ANSWER':
-      const clue = state.game[state.round][state.category][state.clueIndex].value;
-      state.players[state.buzzingIn].score -= action.wager || clue.value;
+      clue = state.game[state.round][state.category][state.clueIndex].value;
+      newState.players[state.buzzingIn].score -= action.wager || clue.value;
       if (action.wager) {
-        state.game[state.round][state.category][state.clueIndex].completed = true;
+        newState.clueIndex = null;
+        newState.game[state.round][state.category][state.clueIndex].completed = true;
       }
-      state.buzzingIn = null;
+      newState.buzzingIn = null;
       break;
 
     case 'CORRECT_ANSWER':
-      const clue = state.game[state.round][state.category][state.clueIndex].value;
-      state.players[state.buzzingIn].score += action.wager || clue.value;
-      state.game[state.round][state.category][state.clueIndex].completed = true;
-      state.buzzingIn = null;
+      clue = state.game[state.round][state.category][state.clueIndex].value;
+      newState.players[state.buzzingIn].score += action.wager || clue.value;
+      newState.game[state.round][state.category][state.clueIndex].completed = true;
+      newState.buzzingIn = null;
+      newState.clueIndex = null;
       break;
 
     case 'END_CLUE':
-      state.game[state.round][state.category][state.clueIndex].completed = true;
+      newState.buzzingIn = null;
+      newState.clueIndex = null;
+      newState.game[state.round][state.category][state.clueIndex].completed = true;
       break;
 
     default:
       throw `Unknown action type ${action.type}`;
   }
+
+  return newState;
 }

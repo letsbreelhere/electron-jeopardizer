@@ -1,20 +1,21 @@
 import { useLocation } from 'react-router-dom';
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 
+import { reducer, initialState } from './reducer';
 import './App.scss';
 import './Scores.scss'
 
-const Board = ({ round, onPickClue }) => {
+const Board = ({ round, onClueSelect }) => {
   return (
     <ul className="categories">
       {Object.entries(round).map(([category, clues]) => (
         <li key={category}>
           <h1>{category}</h1>
           <ul className="clues">
-            {clues.map(clue => (
+            {clues.map((clue, i) => (
               <li key={clue.id}>
                 {clue.unrevealed ? '-' : (
-                  <a onClick={() => onPickClue(clue)}>
+                  <a onClick={() => onClueSelect(category, i)}>
                     ${clue.value}
                   </a>
                 )}
@@ -59,32 +60,29 @@ const NameEditor = ({ value, onSave }) => {
   )
 }
 
-const ScoreDisplay = ({ scores }) => {
-  const [names, setNames] = useState(scores.map((_, i) => `Player ${i+1}`));
+const ScoreDisplay = ({ players, dispatch }) => {
   const [editingName, setEditingName] = useState(null);
   const saveName = (name, i) => {
-    const newNames = names;
-    names[i] = name || `Player ${i+1}`;
-    setNames(newNames);
+    dispatch({type: 'CHANGE_NAME', index: i, name})
     setEditingName(null);
   }
 
   return (
     <div className="score-display">
-      {scores.map((score, i) => (
+      {players.map((player, i) => (
         <div key={i} className="player">
           <div onClick={() => !editingName && setEditingName(i)} className="name">
             {editingName === i ? (
               <NameEditor
-                value={names[i]}
+                value={player.name}
                 onSave={name => saveName(name, i)}
               />
             ) : (
-              names[i]
+              player.name
             )}
           </div>
           <div className="score">
-            ${score}
+            ${player.score}
           </div>
         </div>
       ))}
@@ -92,33 +90,25 @@ const ScoreDisplay = ({ scores }) => {
   )
 };
 
-const initialState = (playerCount, game) => ({
-  players: (new Array(playerCount)).map((_, i) => ({
-    name: `Player ${i+1}`,
-    score: 0
-  })),
-  game,
-  currentRound: 'firstRound',
-});
-
 const MainGame = () => {
   const location = useLocation();
   const game = location.state.game;
-  const [scores, setScores] = useState(new Array(location.state.playerCount).fill(0));
   const [state, dispatch] = useReducer(reducer, initialState(location.state.playerCount, game));
 
   if (!game) return null;
 
+  const clue = state.clueIndex !== null && state.game[state.round][state.category][state.clueIndex];
+
   return (
     <>
       {clue && (
-        <ClueModal clue={clue} onClose={() => setClue(null)}/>
+        <ClueModal clue={clue} onClose={() => dispatch({type: 'END_CLUE'})}/>
       )}
       <Board
-        round={game.firstRound}
-        onPickClue={setClue}
+        round={state.game[state.round]}
+        onClueSelect={(category, index) => dispatch({ type: 'SELECT_CLUE', category, index })}
       />
-      <ScoreDisplay scores={scores} />
+      <ScoreDisplay dispatch={dispatch} players={state.players} />
     </>
   );
 };
