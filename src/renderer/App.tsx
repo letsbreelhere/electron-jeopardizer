@@ -1,9 +1,10 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { useNavigate, useLocation, MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './App.scss';
 import { parse } from 'node-html-parser';
 import parseJ from './JarchiveParser';
 import DatePicker from 'react-date-picker';
+import moment from 'moment';
 
 const Board = ({ round, onPickClue }) => {
   return (
@@ -43,24 +44,9 @@ const ScoreDisplay = () => (
 )
 
 const MainGame = () => {
-  const [game, setGame] = useState(null);
+  const location = useLocation();
+  const game = location.state.game;
   const [clue, setClue] = useState(null);
-  useEffect(() => {
-    const eff = async () => {
-      const clueHtml = await electron.ipc.invoke(
-        'httpGet',
-        'http://www.j-archive.com/search.php?search=date%3A2021-01-26'
-      );
-      const gameId = parse(clueHtml).querySelector('img.game_dynamics')._attrs['src'].replace('chartgame.php?game_id=', '');
-      const responseHtml = await electron.ipc.invoke(
-        'httpGet',
-        `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
-      );
-      const parsed = await parseJ(clueHtml, responseHtml);
-      setGame(parsed);
-    }
-    eff();
-  }, [])
 
   if (!game) return null;
 
@@ -78,23 +64,60 @@ const MainGame = () => {
   );
 };
 
-const Setup = () => {
+const Setup = (props) => {
   const [date, setDate] = useState(new Date());
+  const [loadStep, setLoadStep] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const onClick = async () => {
+    setLoading(true);
+    setLoadStep('Getting clues...');
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+    const clueHtml = await electron.ipc.invoke(
+      'httpGet',
+      `http://www.j-archive.com/search.php?search=date%3A${formattedDate}`
+    );
+    const img = parse(clueHtml).querySelector('img.game_dynamics')
+    if (img) {
+      const gameId = img._attrs['src'].replace('chartgame.php?game_id=', '');
+      setLoadStep('Getting responses...');
+      const responseHtml = await electron.ipc.invoke(
+        'httpGet',
+        `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
+      );
+      const game = await parseJ(clueHtml, responseHtml);
+      setLoadStep(null);
+      setLoading(false);
+
+      await navigate(
+        '/game',
+        {
+          replace: true,
+          state: { game }
+        }
+      )
+    } else {
+      setLoadStep("Error getting game. There probably isn't a game for that date.")
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="setup">
       <div className="game-date">
         <h1>Select a game date</h1>
         <DatePicker
-          onChange={setDate}
+          onChange={date => { setDate(date); setLoadStep(null) }}
           value={date}
         />
 
-        {date && (
-          <button className="play">
-            Let's play!
-          </button>
-        )}
+        <button disabled={loading} onClick={onClick} className="play">
+          Let's play!
+        </button>
+
+        <div className="load-step">
+          {loadStep}
+        </div>
       </div>
     </div>
   )

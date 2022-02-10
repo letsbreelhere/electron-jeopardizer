@@ -101,6 +101,16 @@ body {
         box-shadow: none;
         transform: translate(5px, 5px);
       }
+
+      &:disabled {
+        background: darken(desaturate($blue, 100%), 10%);
+        border-color: darken(desaturate($white, 100%), 10%);
+      }
+
+    }
+    .load-step {
+      margin-top: 2rem;
+      font-size: 24px;
     }
   }
 }
