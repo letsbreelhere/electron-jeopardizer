@@ -35,15 +35,30 @@ const ClueModal = ({ clue, onClose }) => (
   </>
 );
 
-const ScoreDisplay = () => (
-  <div className="score-display">
-  </div>
-);
+const ScoreDisplay = ({ scores }) => {
+  const [names, setNames] = useState(scores.map((_, i) => `Player ${i}`));
+
+  return (
+    <div className="score-display">
+      {scores.map((score, i) => {
+        <div key={i} className="player">
+          <div className="name">
+            {names[i]}
+          </div>
+          <div className="score">
+            {score}
+          </div>
+        </div>
+      })}
+    </div>
+  )
+};
 
 const MainGame = () => {
   const location = useLocation();
   const game = location.state.game;
   const [clue, setClue] = useState(null);
+  const [scores, setScores] = useState(new Array(location.state.playerCount).fill(0));
 
   if (!game) return null;
 
@@ -56,7 +71,7 @@ const MainGame = () => {
         round={game.firstRound}
         onPickClue={setClue}
       />
-      <ScoreDisplay />
+      <ScoreDisplay scores={scores} />
     </>
   );
 };

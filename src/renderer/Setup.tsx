@@ -21,7 +21,6 @@ const Setup = () => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
     const savedSetup = await electron.ipc.invoke('loadGameSetup', `${formattedDate}.json`);
     if (savedSetup) {
-      console.warn(savedSetup)
       game = savedSetup;
     } else {
       const clueHtml = await electron.ipc.invoke(
@@ -50,7 +49,10 @@ const Setup = () => {
       '/game',
       {
         replace: true,
-        state: { game }
+        state: {
+          game,
+          playerCount,
+        }
       }
     )
   }
