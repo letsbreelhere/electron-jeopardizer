@@ -37,24 +37,26 @@ const Setup = () => {
         );
         game = await parseJ(clueHtml, responseHtml);
         await electron.ipc.invoke('saveGameSetup', `${formattedDate}.json`, JSON.stringify(game));
-        setLoadStep(null);
-        setLoading(false);
-
-        await navigate(
-          '/game',
-          {
-            replace: true,
-            state: {
-              game,
-              playerCount,
-            }
-          }
-        )
       } else {
         setLoadStep("Error getting game. There probably isn't a game for that date.")
         setLoading(false);
+        return;
       }
     }
+
+    setLoadStep(null);
+    setLoading(false);
+
+    await navigate(
+      '/game',
+      {
+        replace: true,
+        state: {
+          game,
+          playerCount,
+        }
+      }
+    )
   }
 
   return (
@@ -63,6 +65,8 @@ const Setup = () => {
         <DatePicker
           onChange={date => { setDate(date); setLoadStep(null) }}
           value={date}
+          clearIcon={null}
+          calendarIcon={null}
         />
         <div className="player-count">
           <label># of players</label>
