@@ -1,0 +1,85 @@
+@import './common.scss';
+
+.setup {
+  font-family: 'Swiss 911';
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .game-date {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .react-date-picker {
+      div[class*='wrapper'] {
+        border: none;
+      }
+      input {
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+        }
+        &::placeholder {
+          color: $yellow;
+        }
+        border: none;
+        background: transparent;
+        font-size: 72px;
+        color: $yellow;
+      }
+      span[class*='divider'] {
+        color: $yellow;
+        font-size: 72px;
+      }
+      svg[class*='icon'] {
+        stroke: $white;
+      }
+    }
+
+    button.play {
+      font-family: 'Swiss 911';
+      padding: 20px;
+      cursor: pointer;
+      background: $blue;
+      margin-top: 2rem;
+      border: 5px solid $white;
+      border-radius: 15px;
+      box-shadow: 10px 10px $black;
+      font-size: 72px;
+      color: $white;
+      &:active {
+        box-shadow: none;
+        transform: translate(5px, 5px);
+      }
+
+      &:disabled {
+        background: darken(desaturate($blue, 100%), 10%);
+        border-color: darken(desaturate($white, 100%), 10%);
+      }
+
+    }
+    .load-step {
+      margin-top: 2rem;
+      font-size: 24px;
+    }
+  }
+
+  .player-count {
+    display: flex;
+    align-items: center;
+    font-size: 36px;
+    input {
+      margin-left: 1rem;
+      font-size: 36px;
+      text-align: right;
+      width: 2em;
+    }
+  }
+}
+

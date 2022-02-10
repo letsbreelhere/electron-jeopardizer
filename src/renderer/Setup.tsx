@@ -4,13 +4,16 @@ import { parse } from 'node-html-parser';
 import DatePicker from 'react-date-picker';
 import moment from 'moment';
 
+import './Setup.scss';
 import parseJ from './JarchiveParser';
 
 const Setup = () => {
   const [date, setDate] = useState(new Date());
   const [loadStep, setLoadStep] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [playerCount, setPlayerCount] = useState(3);
   const navigate = useNavigate();
+
   const onClick = async () => {
     let game;
     setLoading(true);
@@ -55,11 +58,14 @@ const Setup = () => {
   return (
     <div className="setup">
       <div className="game-date">
-        <h1>Select a game date</h1>
         <DatePicker
           onChange={date => { setDate(date); setLoadStep(null) }}
           value={date}
         />
+        <div className="player-count">
+          <label># of players</label>
+          <input min={1} max={10} type="number" value={playerCount} onChange={e => setPlayerCount(e.target.data)} />
+        </div>
 
         <button disabled={loading} onClick={onClick} className="play">
           Let's play!
