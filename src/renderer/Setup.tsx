@@ -66,7 +66,7 @@ const Setup = () => {
         />
         <div className="player-count">
           <label># of players</label>
-          <input min={1} max={10} type="number" value={playerCount} onChange={e => setPlayerCount(e.target.data)} />
+          <input min={1} max={10} type="number" value={playerCount} onChange={e => setPlayerCount(e.target.value)} />
         </div>
 
         <button disabled={loading} onClick={onClick} className="play">

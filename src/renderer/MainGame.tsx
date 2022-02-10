@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 import './App.scss';
+import './Scores.scss'
 
 const Board = ({ round, onPickClue }) => {
   return (
@@ -35,21 +36,56 @@ const ClueModal = ({ clue, onClose }) => (
   </>
 );
 
+const NameEditor = ({ value, onSave }) => {
+  const [name, setName] = useState(value);
+  const handleKeyDown = e => {
+    if (e.key === 'Enter') {
+      onSave(name);
+    }
+  }
+  return (
+    <input
+      autoFocus
+      spellCheck={false}
+      className="name-edit"
+      value={name}
+      onKeyDown={handleKeyDown}
+      onChange={e => setName(e.target.value)}
+      onBlur={() => onSave(name)}
+      onFocus={e => e.target.select()}
+    />
+  )
+}
+
 const ScoreDisplay = ({ scores }) => {
   const [names, setNames] = useState(scores.map((_, i) => `Player ${i}`));
+  const [editingName, setEditingName] = useState(null);
+  const saveName = (name, i) => {
+    const newNames = names;
+    names[i] = name;
+    setNames(newNames);
+    setEditingName(null);
+  }
 
   return (
     <div className="score-display">
-      {scores.map((score, i) => {
+      {scores.map((score, i) => (
         <div key={i} className="player">
-          <div className="name">
-            {names[i]}
+          <div onClick={() => !editingName && setEditingName(i)} className="name">
+            {editingName === i ? (
+              <NameEditor
+                value={names[i]}
+                onSave={name => saveName(name, i)}
+              />
+            ) : (
+              names[i]
+            )}
           </div>
           <div className="score">
-            {score}
+            ${score}
           </div>
         </div>
-      })}
+      ))}
     </div>
   )
 };
