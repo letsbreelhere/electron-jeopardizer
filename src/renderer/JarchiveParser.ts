@@ -30,6 +30,7 @@ const parseRound = (clueRoot, responseRoot, double) => {
     result[category] = [
       ...result[category],
       {
+        id: i,
         value,
         text: htmlDecode(clue.querySelector('.clue_text').rawText),
         response: responses[i],
@@ -47,8 +48,6 @@ const parseRound = (clueRoot, responseRoot, double) => {
       }
     })
   });
-
-  console.warn(result)
 
   return result;
 }

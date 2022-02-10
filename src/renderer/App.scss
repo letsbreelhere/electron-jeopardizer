@@ -5,16 +5,15 @@ $border-size: 10px;
 $black: #050505;
 
 @font-face {
-    font-family: 'Swiss 911';
-    src: url('../../assets/fonts/swiss-911.ttf');
+  font-family: 'Swiss 911';
+  src: url('../../assets/fonts/swiss-911.ttf');
 }
 
 @font-face {
-    font-family: 'Korinna Regular';
-    src: url('../../assets/fonts/Korinna-Regular.otf');
+  font-family: 'Korinna Regular';
+  src: url('../../assets/fonts/Korinna-Regular.otf');
 }
 
-::selection { background: transparent; }
 
 body {
   position: relative;
@@ -24,6 +23,14 @@ body {
   font-family: sans-serif;
   overflow-y: hidden;
   margin: 0;
+  cursor: default;
+}
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 ul {
@@ -38,7 +45,8 @@ a {
   align-items: center;
   width: 100%;
   height: 100%;
-  &:active, .open {
+
+  &:active {
     background: lighten($blue, 10%);
     color: saturate($yellow, 100%);
   }
@@ -46,23 +54,28 @@ a {
 
 ul.categories {
   font-family: 'Swiss 911';
-  height: 100vh;
+  height: calc(100vh*6/7);
   text-align: center;
   display: flex;
   align-items: start;
   list-style-type: none;
+
   &:last-child {
+    box-sizing: border-box;
     border-right: $border-size solid $black;
   }
-  li {
+
+  & > li {
     width: 100%;
     height: 100%;
     width: calc(100%/6);
+
     h1 {
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 0;
+      box-sizing: border-box;
       border: $border-size solid $black;
       border-right: 0;
       font-size: 52px;
@@ -74,13 +87,15 @@ ul.categories {
     ul.clues {
       text-shadow: 10px 10px $black;
       list-style-type: none;
+      box-sizing: border-box;
       border-left: $border-size solid $black;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      height: calc(100%*5/6 + 4px);
-      li {
+      height: calc(100%*5/6);
+
+      & > li {
         color: $yellow;
         font-size: 96px;
         display: flex;
@@ -88,10 +103,8 @@ ul.categories {
         align-items: center;
         height: 20%;
         width: 100%;
+        box-sizing: border-box;
         border-bottom: $border-size solid $black;
-        &:last-child {
-          margin-bottom: 24px;
-        }
       }
     }
   }
@@ -109,7 +122,7 @@ ul.categories {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 75vw;
+  width: 100vw;
   height: 80vh;
   background: $blue;
   display: flex;
@@ -121,6 +134,6 @@ ul.categories {
 
   .clue-text {
     text-align: center;
-    margin: calc(33%/2);
+    margin: calc(25%);
   }
 }

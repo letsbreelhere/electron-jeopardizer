@@ -8,11 +8,11 @@ const Board = ({ round, onPickClue }) => {
   return (
     <ul className="categories">
       {Object.entries(round).map(([category, clues]) => (
-        <li>
+        <li key={category}>
           <h1>{category}</h1>
           <ul className="clues">
             {clues.map(clue => (
-              <li>
+              <li key={clue.id}>
                 <a onClick={() => onPickClue(clue)}>
                   ${clue.value}
                 </a>
@@ -34,6 +34,11 @@ const ClueModal = ({ clue, onClose }) => (
       </div>
     </div>
   </>
+)
+
+const ScoreDisplay = () => (
+  <div className="score-display">
+  </div>
 )
 
 const Startup = () => {
@@ -67,6 +72,7 @@ const Startup = () => {
         round={game.firstRound}
         onPickClue={setClue}
       />
+      <ScoreDisplay />
     </>
   );
 };
