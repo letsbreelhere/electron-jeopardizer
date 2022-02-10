@@ -30,8 +30,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "Jeopardizer",
+    "appId": "org.erb.Jeopardizer",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [

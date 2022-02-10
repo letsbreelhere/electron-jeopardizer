@@ -10,12 +10,13 @@
  */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import fs from 'fs';
 import fetch from 'electron-fetch';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
 
+import { resolveHtmlPath } from './util';
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -26,10 +27,38 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.handle('httpGet', async (event, [url]) => {
+const gamesPath = path.join(app.getPath('userData'), 'games');
+
+const makeGamesPath = () => {
+  if (!fs.existsSync(gamesPath)) fs.mkdirSync(gamesPath);
+}
+
+ipcMain.handle('httpGet', async (_, [url]) => {
   const res = await fetch(url);
   const body = await res.text();
   return body;
+})
+
+ipcMain.handle('loadGameSetup', async (_, [name]) => {
+  let dieWith;
+  const gamePath = path.join(gamesPath, name);
+  if (dieWith) {
+    throw dieWith;
+  }
+
+  if (fs.existsSync(gamePath)) {
+    return JSON.parse(fs.readFileSync(gamePath));
+  } else {
+    return null;
+  }
+})
+
+ipcMain.handle('saveGameSetup', async (_, [name, data]) => {
+  let dieWith;
+  makeGamesPath(err => { dieWith = err; });
+
+  await fs.writeFileSync(path.join(gamesPath, name), data);
+  return true;
 })
 
 if (process.env.NODE_ENV === 'production') {

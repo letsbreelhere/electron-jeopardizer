@@ -64,42 +64,50 @@ const MainGame = () => {
   );
 };
 
-const Setup = (props) => {
+const Setup = () => {
   const [date, setDate] = useState(new Date());
   const [loadStep, setLoadStep] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const onClick = async () => {
+    let game;
     setLoading(true);
     setLoadStep('Getting clues...');
     const formattedDate = moment(date).format('YYYY-MM-DD');
-    const clueHtml = await electron.ipc.invoke(
-      'httpGet',
-      `http://www.j-archive.com/search.php?search=date%3A${formattedDate}`
-    );
-    const img = parse(clueHtml).querySelector('img.game_dynamics')
-    if (img) {
-      const gameId = img._attrs['src'].replace('chartgame.php?game_id=', '');
-      setLoadStep('Getting responses...');
-      const responseHtml = await electron.ipc.invoke(
-        'httpGet',
-        `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
-      );
-      const game = await parseJ(clueHtml, responseHtml);
-      setLoadStep(null);
-      setLoading(false);
-
-      await navigate(
-        '/game',
-        {
-          replace: true,
-          state: { game }
-        }
-      )
+    const savedSetup = await electron.ipc.invoke('loadGameSetup', `${formattedDate}.json`);
+    if (savedSetup) {
+      console.warn(savedSetup)
+      game = savedSetup;
     } else {
-      setLoadStep("Error getting game. There probably isn't a game for that date.")
-      setLoading(false);
+      const clueHtml = await electron.ipc.invoke(
+        'httpGet',
+        `http://www.j-archive.com/search.php?search=date%3A${formattedDate}`
+      );
+      const img = parse(clueHtml).querySelector('img.game_dynamics')
+      if (img) {
+        const gameId = img._attrs['src'].replace('chartgame.php?game_id=', '');
+        setLoadStep('Getting responses...');
+        const responseHtml = await electron.ipc.invoke(
+          'httpGet',
+          `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
+        );
+        game = await parseJ(clueHtml, responseHtml);
+        await electron.ipc.invoke('saveGameSetup', `${formattedDate}.json`, JSON.stringify(game));
+      } else {
+        setLoadStep("Error getting game. There probably isn't a game for that date.")
+        setLoading(false);
+      }
     }
+    setLoadStep(null);
+    setLoading(false);
+
+    await navigate(
+      '/game',
+      {
+        replace: true,
+        state: { game }
+      }
+    )
   }
 
   return (

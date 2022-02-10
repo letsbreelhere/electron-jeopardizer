@@ -1,7 +1,9 @@
 const { net, contextBridge, ipcRenderer } = require('electron');
 
 const validChannels = [
-  'httpGet'
+  'httpGet',
+  'saveGameSetup',
+  'loadGameSetup',
 ];
 
 
