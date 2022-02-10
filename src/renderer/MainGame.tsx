@@ -58,7 +58,7 @@ const NameEditor = ({ value, onSave }) => {
 }
 
 const ScoreDisplay = ({ scores }) => {
-  const [names, setNames] = useState(scores.map((_, i) => `Player ${i}`));
+  const [names, setNames] = useState(scores.map((_, i) => `Player ${i+1}`));
   const [editingName, setEditingName] = useState(null);
   const saveName = (name, i) => {
     const newNames = names;
