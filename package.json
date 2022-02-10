@@ -233,6 +233,7 @@
     "history": "^5.2.0",
     "lowdb": "^3.0.0",
     "moment": "^2.29.1",
+    "mousetrap": "^1.6.5",
     "node-html-parser": "^5.2.0",
     "react": "^17.0.2",
     "react-date-picker": "^8.4.0",
