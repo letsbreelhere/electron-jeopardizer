@@ -62,7 +62,7 @@ const ScoreDisplay = ({ scores }) => {
   const [editingName, setEditingName] = useState(null);
   const saveName = (name, i) => {
     const newNames = names;
-    names[i] = name;
+    names[i] = name || `Player ${i+1}`;
     setNames(newNames);
     setEditingName(null);
   }

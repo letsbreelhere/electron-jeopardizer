@@ -37,24 +37,24 @@ const Setup = () => {
         );
         game = await parseJ(clueHtml, responseHtml);
         await electron.ipc.invoke('saveGameSetup', `${formattedDate}.json`, JSON.stringify(game));
+        setLoadStep(null);
+        setLoading(false);
+
+        await navigate(
+          '/game',
+          {
+            replace: true,
+            state: {
+              game,
+              playerCount,
+            }
+          }
+        )
       } else {
         setLoadStep("Error getting game. There probably isn't a game for that date.")
         setLoading(false);
       }
     }
-    setLoadStep(null);
-    setLoading(false);
-
-    await navigate(
-      '/game',
-      {
-        replace: true,
-        state: {
-          game,
-          playerCount,
-        }
-      }
-    )
   }
 
   return (
