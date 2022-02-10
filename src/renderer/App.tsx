@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import './App.scss';
 import { parse } from 'node-html-parser';
 import parseJ from './JarchiveParser';
+import DatePicker from 'react-date-picker';
 
 const Board = ({ round, onPickClue }) => {
   return (
@@ -41,7 +42,7 @@ const ScoreDisplay = () => (
   </div>
 )
 
-const Startup = () => {
+const MainGame = () => {
   const [game, setGame] = useState(null);
   const [clue, setClue] = useState(null);
   useEffect(() => {
@@ -77,11 +78,34 @@ const Startup = () => {
   );
 };
 
+const Setup = () => {
+  const [date, setDate] = useState(new Date());
+
+  return (
+    <div className="setup">
+      <div className="game-date">
+        <h1>Select a game date</h1>
+        <DatePicker
+          onChange={setDate}
+          value={date}
+        />
+
+        {date && (
+          <button className="play">
+            Let's play!
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Startup />} />
+        <Route path="/" element={<Setup />} />
+        <Route path="/game" element={<MainGame />} />
       </Routes>
     </Router>
   );

@@ -33,6 +33,80 @@ body {
     user-select: none;
 }
 
+// Date picker
+
+.setup {
+  font-family: 'Swiss 911';
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .game-date {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+      text-decoration: underline;
+      font-weight: 400;
+      margin-top: 0;
+      margin-bottom: 2rem;
+      font-size: 72px;
+      font-family: 'Swiss 911';
+    }
+
+    .react-date-picker {
+      div[class*='wrapper'] {
+        border: none;
+      }
+      input {
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+        }
+        &::placeholder {
+          color: $yellow;
+        }
+        border: none;
+        background: transparent;
+        font-size: 72px;
+        color: $yellow;
+      }
+      span[class*='divider'] {
+        color: $yellow;
+        font-size: 72px;
+      }
+      svg[class*='icon'] {
+        stroke: $white;
+      }
+    }
+
+    button.play {
+      font-family: 'Swiss 911';
+      padding: 20px;
+      cursor: pointer;
+      background: $blue;
+      margin-top: 2rem;
+      border: 5px solid $white;
+      border-radius: 15px;
+      box-shadow: 10px 10px $black;
+      font-size: 72px;
+      color: $white;
+      &:active {
+        box-shadow: none;
+        transform: translate(5px, 5px);
+      }
+    }
+  }
+}
+
+// Game board
+
 ul {
   padding: 0;
   margin: 0;
