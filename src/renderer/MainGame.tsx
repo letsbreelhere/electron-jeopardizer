@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 
 import './App.scss';
 import './Scores.scss'
@@ -92,11 +92,20 @@ const ScoreDisplay = ({ scores }) => {
   )
 };
 
+const initialState = (playerCount, game) => ({
+  players: (new Array(playerCount)).map((_, i) => ({
+    name: `Player ${i+1}`,
+    score: 0
+  })),
+  game,
+  currentRound: 'firstRound',
+});
+
 const MainGame = () => {
   const location = useLocation();
   const game = location.state.game;
-  const [clue, setClue] = useState(null);
   const [scores, setScores] = useState(new Array(location.state.playerCount).fill(0));
+  const [state, dispatch] = useReducer(reducer, initialState(location.state.playerCount, game));
 
   if (!game) return null;
 
