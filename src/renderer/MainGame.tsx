@@ -13,9 +13,11 @@ const Board = ({ round, onPickClue }) => {
           <ul className="clues">
             {clues.map(clue => (
               <li key={clue.id}>
-                <a onClick={() => onPickClue(clue)}>
-                  ${clue.value}
-                </a>
+                {clue.unrevealed ? '-' : (
+                  <a onClick={() => onPickClue(clue)}>
+                    ${clue.value}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
