@@ -77,6 +77,10 @@ ul.categories {
         overflow: unset;
         z-index: 999;
       }
+
+      &.selected {
+        background: lighten(saturate($yellow, 100%), 10%);
+      }
     }
 
     ul.clues {
@@ -114,17 +118,17 @@ ul.categories {
 
 .clue-modal {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  top: calc(100vh/7);
   width: 100vw;
-  height: 80vh;
+  height: calc(100vh*5/7);
   background: $blue;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Korinna Regular';
   font-size: 1.5em;
+  font-weight: bold;
   text-transform: uppercase;
 
   .clue-text {

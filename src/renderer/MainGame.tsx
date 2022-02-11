@@ -1,16 +1,17 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useReducer, useState } from 'react';
+import classNames from 'classnames';
 
 import { reducer, initialState } from './reducer';
 import './App.scss';
 import './Scores.scss'
 
-const Board = ({ round, onClueSelect }) => {
+const Board = ({ state, round, onClueSelect }) => {
   return (
     <ul className="categories">
       {Object.entries(round).map(([category, clues]) => (
         <li key={category}>
-          <h1>{category}</h1>
+          <h1 className={classNames({ selected: state.category === category })}>{category}</h1>
           <ul className="clues">
             {clues.map((clue, i) => (
               <li key={clue.id}>
@@ -105,6 +106,7 @@ const MainGame = () => {
         <ClueModal clue={clue} onClose={() => dispatch({type: 'END_CLUE'})}/>
       )}
       <Board
+        state={state}
         round={state.game[state.round]}
         onClueSelect={(category, index) => dispatch({ type: 'SELECT_CLUE', category, index })}
       />

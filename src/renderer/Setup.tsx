@@ -19,7 +19,10 @@ const Setup = () => {
     setLoading(true);
     setLoadStep('Getting clues...');
     const formattedDate = moment(date).format('YYYY-MM-DD');
-    const savedSetup = await electron.ipc.invoke('loadGameSetup', `${formattedDate}.json`);
+    const savedSetup = await electron.ipc.invoke(
+      'loadGameSetup',
+      `${formattedDate}.json`
+    );
     if (savedSetup) {
       game = savedSetup;
     } else {
@@ -27,7 +30,7 @@ const Setup = () => {
         'httpGet',
         `http://www.j-archive.com/search.php?search=date%3A${formattedDate}`
       );
-      const img = parse(clueHtml).querySelector('img.game_dynamics')
+      const img = parse(clueHtml).querySelector('img.game_dynamics');
       if (img) {
         const gameId = img._attrs['src'].replace('chartgame.php?game_id=', '');
         setLoadStep('Getting responses...');
@@ -36,9 +39,15 @@ const Setup = () => {
           `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
         );
         game = await parseJ(clueHtml, responseHtml);
-        await electron.ipc.invoke('saveGameSetup', `${formattedDate}.json`, JSON.stringify(game));
+        await electron.ipc.invoke(
+          'saveGameSetup',
+          `${formattedDate}.json`,
+          JSON.stringify(game)
+        );
       } else {
-        setLoadStep("Error getting game. There probably isn't a game for that date.")
+        setLoadStep(
+          "Error getting game. There probably isn't a game for that date."
+        );
         setLoading(false);
         return;
       }
@@ -47,42 +56,62 @@ const Setup = () => {
     setLoadStep(null);
     setLoading(false);
 
-    await navigate(
-      '/game',
-      {
-        replace: true,
-        state: {
-          game,
-          playerCount,
-        }
-      }
-    )
-  }
+    await navigate('/game', {
+      replace: true,
+      state: {
+        game,
+        playerCount,
+      },
+    });
+  };
 
   return (
     <div className="setup">
       <div className="game-date">
         <DatePicker
-          onChange={date => { setDate(date); setLoadStep(null) }}
+          onChange={(date) => {
+            setDate(date);
+            setLoadStep(null);
+          }}
           value={date}
           clearIcon={null}
           calendarIcon={null}
         />
         <div className="player-count">
           <label># of players</label>
-          <input min={1} max={10} type="number" value={playerCount} onChange={e => setPlayerCount(Number(e.target.value))} />
+          <div className="counter">
+            <button
+              type="button"
+              className="dec"
+              onClick={() => playerCount > 1 && setPlayerCount(playerCount - 1)}
+            >
+              –
+            </button>
+            <input
+              min={1}
+              max={10}
+              type="number"
+              value={playerCount}
+              onChange={(e) => setPlayerCount(Number(e.target.value))}
+            />
+            <button
+              type="button"
+              className="inc"
+              onClick={() => playerCount < 10 && setPlayerCount(playerCount + 1)}
+            >
+              +
+            </button>
+          </div>
         </div>
 
         <button disabled={loading} onClick={onClick} className="play">
           Let's play!
         </button>
 
-        <div className="load-step">
-          {loadStep}
-        </div>
+        <div className="load-step">{loadStep}</div>
       </div>
     </div>
-  )
+  );
 };
 
 export default Setup;

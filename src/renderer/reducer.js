@@ -37,6 +37,7 @@ export const reducer = (state, action) => {
       newState.players[state.buzzingIn].score -= action.wager || clue.value;
       if (action.wager) {
         newState.clueIndex = null;
+        newState.category = null;
         newState.game[state.round][state.category][state.clueIndex].completed = true;
       }
       newState.buzzingIn = null;
@@ -47,12 +48,14 @@ export const reducer = (state, action) => {
       newState.players[state.buzzingIn].score += action.wager || clue.value;
       newState.game[state.round][state.category][state.clueIndex].completed = true;
       newState.buzzingIn = null;
+      newState.category = null;
       newState.clueIndex = null;
       break;
 
     case 'END_CLUE':
       newState.buzzingIn = null;
       newState.clueIndex = null;
+      newState.category = null;
       newState.game[state.round][state.category][state.clueIndex].completed = true;
       break;
 
