@@ -13,3 +13,11 @@ $black: #050505;
   font-family: 'Korinna Regular';
   src: url('../../assets/fonts/Korinna-Regular.otf');
 }
+
+$small-screen-max: 1440px;
+
+@mixin small() {
+  @media (max-width: $small-screen-max) {
+    @content;
+  }
+}

@@ -9,6 +9,11 @@ body {
   overflow-y: hidden;
   margin: 0;
   cursor: default;
+  font-size: 48px;
+  @include small {
+    font-size: 32px;
+  }
+  z-index: 1;
 }
 
 :not(input):not(textarea),
@@ -63,10 +68,15 @@ ul.categories {
       box-sizing: border-box;
       border: $border-size solid $black;
       border-right: 0;
-      font-size: 52px;
       letter-spacing: 1px;
       font-weight: 400;
       height: calc(100%/6);
+      font-size: 1em;
+      overflow: hidden;
+      &:hover {
+        overflow: unset;
+        z-index: 999;
+      }
     }
 
     ul.clues {
@@ -82,7 +92,7 @@ ul.categories {
 
       & > li {
         color: $yellow;
-        font-size: 96px;
+        font-size: 2em;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -114,7 +124,7 @@ ul.categories {
   justify-content: center;
   align-items: center;
   font-family: 'Korinna Regular';
-  font-size: 72px;
+  font-size: 1.5em;
   text-transform: uppercase;
 
   .clue-text {
