@@ -7,15 +7,17 @@ import {
   useState,
 } from 'react';
 import classNames from 'classnames';
+import { EventRegister } from 'react-native-event-listeners'
 
-import { KeyEventContext } from './KeyEvents';
+import { EventRegister } from 'react-native-event-listeners'
 import { reducer, initialState } from './reducer';
 import './App.scss';
 import './Scores.scss';
 
 const ReducerContext = createContext({
   state: null,
-  dispatch: (...args) => console.warn('Attempted to dispatch before context loaded'),
+  dispatch: (...args) =>
+    console.warn('Attempted to dispatch before context loaded'),
 });
 
 const Board = ({ round, onClueSelect }) => {
@@ -42,14 +44,26 @@ const Board = ({ round, onClueSelect }) => {
   );
 };
 
-const ClueModal = ({ clue, onClose }) => (
-  <>
-    <div className="clue-shroud" onClick={onClose} />
-    <div className="clue-modal">
-      <div className="clue-text">{clue.text}</div>
-    </div>
-  </>
-);
+const ClueModal = ({ clue, onClose }) => {
+  const [awaitingBuzz, setAwaitingBuzz] = useState(false);
+  const { state } = useContext(ReducerContext);
+
+  useEffect(() => {
+    EventRegister.on('keyPressed', n => {
+      console.warn("Got", n);
+      //dispatch({ type: 'BUZZ_IN', index: n - 1 })
+    });
+  }, [])
+
+  return (
+    <>
+      <div className="clue-shroud" onClick={onClose} />
+      <div className="clue-modal">
+        <div className="clue-text">{clue.text}</div>
+      </div>
+    </>
+  )
+};
 
 const NameEditor = ({ value, onSave }) => {
   const [name, setName] = useState(value);
@@ -72,18 +86,20 @@ const NameEditor = ({ value, onSave }) => {
   );
 };
 
-const ScoreDisplay = ({ players }) => {
+const ScoreDisplay = () => {
   const [editingName, setEditingName] = useState(null);
-  const { dispatch } = useContext(ReducerContext);
+  const { state, dispatch } = useContext(ReducerContext);
+
   const saveName = (name, i) => {
     dispatch({ type: 'CHANGE_NAME', index: i, name });
     setEditingName(null);
   };
+  const players = state.players;
 
   return (
     <div className="score-display">
       {players.map((player, i) => (
-        <div key={i} className="player">
+        <div key={i} className={classNames("player", { active: state.buzzingIn === i })}>
           <div
             onClick={() => !editingName && setEditingName(i)}
             className="name"
@@ -105,16 +121,12 @@ const ScoreDisplay = ({ players }) => {
 };
 
 const MainGame = () => {
-
   const location = useLocation();
   const game = location.state.game;
   const [state, dispatch] = useReducer(
     reducer,
     initialState(location.state.playerCount, game)
   );
-
-  const keyEvents = useContext(KeyEventContext);
-  keyEvents.on('keyPressed', () => dispatch({ type: 'BUZZ_IN', index: 0 }));
 
   if (!game) return null;
 
@@ -133,7 +145,7 @@ const MainGame = () => {
           dispatch({ type: 'SELECT_CLUE', category, index })
         }
       />
-      <ScoreDisplay players={state.players} />
+      <ScoreDisplay />
     </ReducerContext.Provider>
   );
 };
