@@ -193,10 +193,6 @@ const WagerModal = ({ onFinish }) => {
 const MainGame = () => {
   const { state, dispatch } = useContext(ReducerContext);
 
-  if (!state.game) {
-    return null;
-  }
-
   const clue =
     state.clueIndex !== null &&
     state.game[state.round][state.category][state.clueIndex];

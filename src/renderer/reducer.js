@@ -10,6 +10,7 @@ export const initialState = {
   buzzingIn: null,
   ddClue: null,
   wager: null,
+  alreadyAnswered: {},
 };
 
 const finishClue = state => {
@@ -17,6 +18,7 @@ const finishClue = state => {
   state.buzzingIn = null;
   state.category = null;
   state.clueIndex = null;
+  state.alreadyAnswered = {};
 
   const allClues = Object.values(state.game[state.round]).flat();
   if (allClues.every(clue => clue.completed)) {
@@ -68,13 +70,17 @@ export const reducer = (state, action) => {
       break;
 
     case 'BUZZ_IN':
-      newState.buzzingIn = action.index;
+      if (!state.alreadyAnswered[action.index]) {
+        newState.buzzingIn = action.index;
+        newState.alreadyAnswered[action.index] = true;
+      }
       break;
 
     case 'WRONG_ANSWER':
       clue = state.game[state.round][state.category][state.clueIndex];
       newState.players[state.buzzingIn].score -= state.wager || clue.value;
-      if (state.wager) {
+      const allPlayersBuzzed = Object.keys(state.alreadyAnswered).length === state.players.length
+      if (state.wager || allPlayersBuzzed) {
         finishClue(newState);
       }
       newState.buzzingIn = null;
