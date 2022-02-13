@@ -7,7 +7,10 @@ export const initialState = (playerCount, game) => ({
   round: 'firstRound',
   category: null,
   clueIndex: null,
+  controlsBoard: 0,
   buzzingIn: null,
+  ddClue: null,
+  wager: null,
 });
 
 const finishClue = state => {
@@ -26,6 +29,18 @@ export const reducer = (state, action) => {
       newState.players[action.index].score = action.value;
       break;
 
+    case 'START_WAGER':
+      newState.buzzingIn = state.controlsBoard;
+      newState.ddClue = { category: action.category, index: action.index };
+      break;
+
+    case 'SET_WAGER':
+      newState.wager = action.wager;
+      newState.category = state.ddClue.category;
+      newState.clueIndex = state.ddClue.index;
+      newState.ddClue = null;
+      break;
+
     case 'SELECT_CLUE':
       newState.category = action.category;
       newState.clueIndex = action.index;
@@ -41,8 +56,8 @@ export const reducer = (state, action) => {
 
     case 'WRONG_ANSWER':
       clue = state.game[state.round][state.category][state.clueIndex];
-      newState.players[state.buzzingIn].score -= action.wager || clue.value;
-      if (action.wager) {
+      newState.players[state.buzzingIn].score -= state.wager || clue.value;
+      if (state.wager) {
         finishClue(newState);
       }
       newState.buzzingIn = null;
@@ -50,7 +65,8 @@ export const reducer = (state, action) => {
 
     case 'CORRECT_ANSWER':
       clue = state.game[state.round][state.category][state.clueIndex];
-      newState.players[state.buzzingIn].score += action.wager || clue.value;
+      newState.players[state.buzzingIn].score += state.wager || clue.value;
+      newState.controlsBoard = state.buzzingIn;
       finishClue(newState);
       break;
 
@@ -68,4 +84,6 @@ export const reducer = (state, action) => {
 export const derivedState = state => ({
   ...state,
   isBuzzingIn: state.buzzingIn !== null,
+  currentPlayer: (state.buzzingIn !== null) && state.players[state.buzzingIn],
+  clue: state.game?.[state.round]?.[state.category]?.[state.clueIndex],
 });

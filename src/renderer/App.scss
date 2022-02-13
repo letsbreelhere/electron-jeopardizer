@@ -109,30 +109,61 @@ ul.categories {
   }
 }
 
-.clue-shroud {
+.shroud {
   position: absolute;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0,0,0,50%);
 }
 
-.clue-modal {
+.modal {
   position: absolute;
   left: 0;
   top: calc(100vh/7);
   width: 100vw;
   height: calc(100vh*5/7);
   background: $blue;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: 'Korinna Regular';
   font-size: 1.5em;
   font-weight: bold;
   text-transform: uppercase;
+  text-align: center;
+}
+
+.clue-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .clue-text {
-    text-align: center;
     margin: calc(25%);
+  }
+}
+
+.wager-modal {
+  .wager-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+
+    .input-box {
+      padding: 0.5rem;
+      border: 3px solid $white;
+      margin-top: 1em;
+      input {
+        max-width: 3em;
+        font-weight: bolder;
+        background: transparent;
+        border: none;
+        color: $white;
+        font-family: 'Korinna Regular';
+        font-size: 1em;
+        &:focus-visible {
+          outline: none;
+        }
+        text-align: right;
+      }
+    }
   }
 }

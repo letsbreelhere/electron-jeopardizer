@@ -34,7 +34,7 @@ const Board = ({ round, onClueSelect }) => {
           <ul className="clues">
             {clues.map((clue, i) => (
               <li key={clue.id}>
-                {!clue.unrevealed && (
+                {!clue.completed && (
                   <a onClick={() => onClueSelect(category, i)}>${clue.value}</a>
                 )}
               </li>
@@ -82,13 +82,13 @@ const ClueModal = ({ clue, onClose }) => {
     // listener.
     EventRegister.rmAll();
 
-    EventRegister.on('keyPressed', onKeyPressed)
+    EventRegister.on('keyPressed', onKeyPressed);
   }, [onKeyPressed]);
 
   return (
     <>
-      <div className="clue-shroud" onClick={onClose} />
-      <div className="clue-modal">
+      <div className="shroud" onClick={onClose} />
+      <div className="clue-modal modal">
         <div className="clue-text">{clue.text}</div>
       </div>
     </>
@@ -131,7 +131,11 @@ const ScoreDisplay = () => {
       {players.map((player, i) => (
         <div
           key={i}
-          className={classNames('player', { active: state.buzzingIn === i })}
+          className={classNames('player', {
+            active:
+              state.buzzingIn === i ||
+              (!state.isBuzzingIn && !state.clue && state.controlsBoard === i),
+          })}
         >
           <div
             onClick={() => !editingName && setEditingName(i)}
@@ -153,6 +157,46 @@ const ScoreDisplay = () => {
   );
 };
 
+const WagerModal = ({ onFinish }) => {
+  const { state, dispatch } = useContext(ReducerContext);
+
+  // TODO: Older games have different round maxes. This should pull the maximum
+  // score for a clue in the current round.
+  const maxForRound = state.round === 'firstRound' ? 1000 : 2000;
+
+  const max = Math.max(maxForRound, state.currentPlayer.score);
+  const [wager, setWager] = useState(max);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (wager < max && wager > 5) onFinish(wager);
+    }
+  };
+
+  return (
+    <>
+      <div className="shroud" />
+      <div className="wager-modal modal">
+        <h1>Daily Double!</h1>
+        <div className="wager-content">
+          What is your wager?
+          <div className="input-box">
+            <span className="prefix">$</span>
+            <input
+              autoFocus
+              onKeyDown={handleKeyDown}
+              type="numeric"
+              value={wager}
+              onChange={(e) => setWager(Number(e.target.value))}
+              onFocus={(e) => e.target.select()}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const MainGame = () => {
   const location = useLocation();
   const game = location.state.game;
@@ -169,14 +213,23 @@ const MainGame = () => {
 
   return (
     <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
+      {state.ddClue && (
+        <WagerModal
+          onFinish={(wager) => dispatch({ type: 'SET_WAGER', wager })}
+        />
+      )}
       {clue && (
         <ClueModal clue={clue} onClose={() => dispatch({ type: 'END_CLUE' })} />
       )}
       <Board
         round={state.game[state.round]}
-        onClueSelect={(category, index) =>
-          dispatch({ type: 'SELECT_CLUE', category, index })
-        }
+        onClueSelect={(category, index) => {
+          if (state.game[state.round][category][index].dailyDouble) {
+            dispatch({ type: 'START_WAGER', category, index });
+          } else {
+            dispatch({ type: 'SELECT_CLUE', category, index });
+          }
+        }}
       />
       <ScoreDisplay />
     </ReducerContext.Provider>

@@ -37,7 +37,7 @@ const parseRound = (clueRoot, responseRoot, double) => {
         text,
         response: responses[i],
         dailyDouble,
-        unrevealed: !text,
+        completed: !text,
       }
     ]
   })
