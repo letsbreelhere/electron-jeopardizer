@@ -3,24 +3,15 @@ import {
   useContext,
   useCallback,
   useEffect,
-  useMemo,
-  createContext,
-  useReducer,
   useState,
 } from 'react';
 import classNames from 'classnames';
 import { EventRegister } from 'react-native-event-listeners';
 
 import { EventRegister } from 'react-native-event-listeners';
-import { reducer, initialState, derivedState } from './reducer';
+import { ReducerContext } from './reducer';
 import './App.scss';
 import './Scores.scss';
-
-const ReducerContext = createContext({
-  state: null,
-  dispatch: (...args) =>
-    console.warn('Attempted to dispatch before context loaded'),
-});
 
 const Board = ({ round, onClueSelect }) => {
   const { state } = useContext(ReducerContext);
@@ -200,21 +191,18 @@ const WagerModal = ({ onFinish }) => {
 };
 
 const MainGame = () => {
-  const location = useLocation();
-  const game = location.state.game;
-  const [state, dispatch] = useReducer(
-    reducer,
-    initialState(location.state.playerCount, game)
-  );
+  const { state, dispatch } = useContext(ReducerContext);
 
-  if (!game) return null;
+  if (!state.game) {
+    return null;
+  }
 
   const clue =
     state.clueIndex !== null &&
     state.game[state.round][state.category][state.clueIndex];
 
   return (
-    <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
+    <>
       {state.ddClue && (
         <WagerModal
           onFinish={(wager) => dispatch({ type: 'SET_WAGER', wager })}
@@ -234,7 +222,7 @@ const MainGame = () => {
         }}
       />
       <ScoreDisplay />
-    </ReducerContext.Provider>
+    </>
   );
 };
 

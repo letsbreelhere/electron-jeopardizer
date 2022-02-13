@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import './Setup.scss';
 import parseJ from './JarchiveParser';
+import { ReducerContext } from './reducer';
 
 const Setup = () => {
   const [date, setDate] = useState(new Date());
@@ -13,6 +14,7 @@ const Setup = () => {
   const [loading, setLoading] = useState(false);
   const [playerCount, setPlayerCount] = useState(3);
   const navigate = useNavigate();
+  const { state, dispatch } = useContext(ReducerContext);
 
   const onClick = async () => {
     let game;
@@ -56,13 +58,13 @@ const Setup = () => {
     setLoadStep(null);
     setLoading(false);
 
-    await navigate('/game', {
-      replace: true,
-      state: {
-        game,
-        playerCount,
-      },
+    await dispatch({
+      type: 'SETUP_COMPLETE',
+      playerCount,
+      game,
     });
+
+    await navigate('/game', { replace: true });
   };
 
   return (

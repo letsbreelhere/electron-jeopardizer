@@ -1,10 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useReducer } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import Mousetrap from 'mousetrap';
 
 import { EventRegister } from 'react-native-event-listeners'
 import MainGame from './MainGame';
 import Setup from './Setup';
+import { reducer, initialState, derivedState } from './reducer';
+import { ReducerContext } from './reducer';
 
 const keysToWatch = [
   '1',
@@ -30,12 +32,19 @@ export default function App() {
     });
   }, []);
 
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Setup />} />
-        <Route path="/game" element={<MainGame />} />
-      </Routes>
-    </Router>
+    <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Setup />} />
+          <Route path="/game" element={<MainGame />} />
+        </Routes>
+      </Router>
+    </ReducerContext.Provider>
   );
 }

@@ -1,17 +1,16 @@
-export const initialState = (playerCount, game) => ({
-  players: (new Array(playerCount).fill({})).map((_, i) => ({
-    name: `Player ${i+1}`,
-    score: 0
-  })),
-  game,
-  round: 'firstRound',
+import { createContext } from 'react';
+
+export const initialState = {
+  players: null,
+  game: null,
+  round: 'setup',
   category: null,
   clueIndex: null,
   controlsBoard: 0,
   buzzingIn: null,
   ddClue: null,
   wager: null,
-});
+};
 
 const finishClue = state => {
   state.game[state.round][state.category][state.clueIndex].completed = true;
@@ -34,6 +33,15 @@ export const reducer = (state, action) => {
   let clue;
 
   switch (action.type) {
+    case 'SETUP_COMPLETE':
+      newState.players = (new Array(action.playerCount).fill({})).map((_, i) => ({
+        name: `Player ${i+1}`,
+        score: 0
+      }));
+      newState.game = action.game;
+      newState.round = 'firstRound';
+      break;
+
     case 'SET_SCORE':
       newState.players[action.index].score = action.value;
       break;
@@ -95,4 +103,10 @@ export const derivedState = state => ({
   isBuzzingIn: state.buzzingIn !== null,
   currentPlayer: (state.buzzingIn !== null) && state.players[state.buzzingIn],
   clue: state.game?.[state.round]?.[state.category]?.[state.clueIndex],
+});
+
+export const ReducerContext = createContext({
+  state: null,
+  dispatch: (...args) =>
+    console.warn('Attempted to dispatch before context loaded'),
 });
