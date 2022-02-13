@@ -83,6 +83,8 @@ const ClueModal = ({ clue, onClose }) => {
     EventRegister.rmAll();
 
     EventRegister.on('keyPressed', onKeyPressed);
+
+    return EventRegister.rmAll;
   }, [onKeyPressed]);
 
   return (
