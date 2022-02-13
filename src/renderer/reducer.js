@@ -18,6 +18,15 @@ const finishClue = state => {
   state.buzzingIn = null;
   state.category = null;
   state.clueIndex = null;
+
+  const allClues = Object.values(state.game[state.round]).flat();
+  if (allClues.every(clue => clue.completed)) {
+    if (state.round === 'firstRound') {
+      state.round = 'secondRound';
+    } else {
+      state.round = 'finalJeopardy';
+    }
+  }
 }
 
 export const reducer = (state, action) => {
