@@ -26,6 +26,7 @@ const finishClue = state => {
       state.round = 'secondRound';
     } else {
       state.round = 'finalJeopardy';
+      state.controlsBoard = null;
     }
   }
 }

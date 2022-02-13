@@ -1,15 +1,11 @@
 import { useLocation } from 'react-router-dom';
-import {
-  useContext,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { useContext, useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { EventRegister } from 'react-native-event-listeners';
 
-import { EventRegister } from 'react-native-event-listeners';
 import { ReducerContext } from './reducer';
+import FinalJeopardy from './FinalJeopardy';
+
 import './App.scss';
 import './Scores.scss';
 
@@ -207,16 +203,20 @@ const MainGame = () => {
       {clue && (
         <ClueModal clue={clue} onClose={() => dispatch({ type: 'END_CLUE' })} />
       )}
-      <Board
-        round={state.game[state.round]}
-        onClueSelect={(category, index) => {
-          if (state.game[state.round][category][index].dailyDouble) {
-            dispatch({ type: 'START_WAGER', category, index });
-          } else {
-            dispatch({ type: 'SELECT_CLUE', category, index });
-          }
-        }}
-      />
+      {state.round === 'finalJeopardy' ? (
+        <FinalJeopardy />
+      ) : (
+        <Board
+          round={state.game[state.round]}
+          onClueSelect={(category, index) => {
+            if (state.game[state.round][category][index].dailyDouble) {
+              dispatch({ type: 'START_WAGER', category, index });
+            } else {
+              dispatch({ type: 'SELECT_CLUE', category, index });
+            }
+          }}
+        />
+      )}
       <ScoreDisplay />
     </>
   );

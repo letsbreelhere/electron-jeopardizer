@@ -167,3 +167,14 @@ ul.categories {
     }
   }
 }
+
+.final-jeopardy-modal {
+  top: 0;
+  height: calc(100vh*6/7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .content {
+    margin: calc(25%);
+  }
+}
