@@ -10,6 +10,13 @@ export const initialState = (playerCount, game) => ({
   buzzingIn: null,
 });
 
+const finishClue = state => {
+  state.game[state.round][state.category][state.clueIndex].completed = true;
+  state.buzzingIn = null;
+  state.category = null;
+  state.clueIndex = null;
+}
+
 export const reducer = (state, action) => {
   let newState = JSON.parse(JSON.stringify(state));
   let clue;
@@ -33,30 +40,22 @@ export const reducer = (state, action) => {
       break;
 
     case 'WRONG_ANSWER':
-      clue = state.game[state.round][state.category][state.clueIndex].value;
+      clue = state.game[state.round][state.category][state.clueIndex];
       newState.players[state.buzzingIn].score -= action.wager || clue.value;
       if (action.wager) {
-        newState.clueIndex = null;
-        newState.category = null;
-        newState.game[state.round][state.category][state.clueIndex].completed = true;
+        finishClue(newState);
       }
       newState.buzzingIn = null;
       break;
 
     case 'CORRECT_ANSWER':
-      clue = state.game[state.round][state.category][state.clueIndex].value;
+      clue = state.game[state.round][state.category][state.clueIndex];
       newState.players[state.buzzingIn].score += action.wager || clue.value;
-      newState.game[state.round][state.category][state.clueIndex].completed = true;
-      newState.buzzingIn = null;
-      newState.category = null;
-      newState.clueIndex = null;
+      finishClue(newState);
       break;
 
-    case 'END_CLUE':
-      newState.buzzingIn = null;
-      newState.clueIndex = null;
-      newState.category = null;
-      newState.game[state.round][state.category][state.clueIndex].completed = true;
+    case 'STUMPER':
+      finishClue(newState);
       break;
 
     default:
@@ -65,3 +64,8 @@ export const reducer = (state, action) => {
 
   return newState;
 }
+
+export const derivedState = state => ({
+  ...state,
+  isBuzzingIn: state.buzzingIn !== null,
+});

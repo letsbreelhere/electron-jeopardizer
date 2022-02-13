@@ -1,16 +1,18 @@
 import { useLocation } from 'react-router-dom';
 import {
   useContext,
-  createContext,
+  useCallback,
   useEffect,
+  useMemo,
+  createContext,
   useReducer,
   useState,
 } from 'react';
 import classNames from 'classnames';
-import { EventRegister } from 'react-native-event-listeners'
+import { EventRegister } from 'react-native-event-listeners';
 
-import { EventRegister } from 'react-native-event-listeners'
-import { reducer, initialState } from './reducer';
+import { EventRegister } from 'react-native-event-listeners';
+import { reducer, initialState, derivedState } from './reducer';
 import './App.scss';
 import './Scores.scss';
 
@@ -46,14 +48,42 @@ const Board = ({ round, onClueSelect }) => {
 
 const ClueModal = ({ clue, onClose }) => {
   const [awaitingBuzz, setAwaitingBuzz] = useState(false);
-  const { state } = useContext(ReducerContext);
+  const [keyListener, setKeyListener] = useState(null);
+  const { state, dispatch } = useContext(ReducerContext);
+
+  const onKeyPressed = useCallback(
+    (key) => {
+      if (key === 'escape') {
+        dispatch({ type: 'STUMPER' });
+        return;
+      }
+
+      if (!state.isBuzzingIn) {
+        const buzzingIn = Number(key);
+        if (buzzingIn > 0 && buzzingIn <= state.players.length) {
+          dispatch({ type: 'BUZZ_IN', index: Number(key) - 1 });
+        }
+      } else {
+        switch (key) {
+          case 'y':
+            dispatch({ type: 'CORRECT_ANSWER' });
+            break;
+          case 'n':
+            dispatch({ type: 'WRONG_ANSWER' });
+            break;
+        }
+      }
+    },
+    [state]
+  );
 
   useEffect(() => {
-    EventRegister.on('keyPressed', n => {
-      console.warn("Got", n);
-      //dispatch({ type: 'BUZZ_IN', index: n - 1 })
-    });
-  }, [])
+    // HACK: Ideally we should be able to remove just the previous state's
+    // listener.
+    EventRegister.rmAll();
+
+    EventRegister.on('keyPressed', onKeyPressed)
+  }, [onKeyPressed]);
 
   return (
     <>
@@ -62,7 +92,7 @@ const ClueModal = ({ clue, onClose }) => {
         <div className="clue-text">{clue.text}</div>
       </div>
     </>
-  )
+  );
 };
 
 const NameEditor = ({ value, onSave }) => {
@@ -99,7 +129,10 @@ const ScoreDisplay = () => {
   return (
     <div className="score-display">
       {players.map((player, i) => (
-        <div key={i} className={classNames("player", { active: state.buzzingIn === i })}>
+        <div
+          key={i}
+          className={classNames('player', { active: state.buzzingIn === i })}
+        >
           <div
             onClick={() => !editingName && setEditingName(i)}
             className="name"
@@ -135,7 +168,7 @@ const MainGame = () => {
     state.game[state.round][state.category][state.clueIndex];
 
   return (
-    <ReducerContext.Provider value={{ state, dispatch }}>
+    <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
       {clue && (
         <ClueModal clue={clue} onClose={() => dispatch({ type: 'END_CLUE' })} />
       )}

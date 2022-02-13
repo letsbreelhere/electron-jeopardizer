@@ -6,10 +6,27 @@ import { EventRegister } from 'react-native-event-listeners'
 import MainGame from './MainGame';
 import Setup from './Setup';
 
+const keysToWatch = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  'space',
+  'escape',
+  'y',
+  'n',
+]
 export default function App() {
   useEffect(() => {
-    Mousetrap.bind('1', () => {
-      EventRegister.emit('keyPressed', '1');
+    keysToWatch.forEach((n) => {
+      Mousetrap.bind(`${n}`, () => {
+        EventRegister.emit('keyPressed', `${n}`);
+      });
     });
   }, []);
 
