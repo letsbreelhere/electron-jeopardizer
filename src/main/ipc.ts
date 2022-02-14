@@ -11,7 +11,9 @@ const makeGamesPath = () =>
 
 const ipcSetup = () => {
   ipcMain.handle('getPreference', (_, [pref]) => settings.get(pref));
-  ipcMain.handle('setPreference', (_, [pref, value]) => settings.set(pref, value));
+  ipcMain.handle('setPreference', (_, [pref, value]) =>
+    settings.set(pref, value)
+  );
   ipcMain.handle('hasPreference', (_, [pref]) => settings.has(pref));
 
   ipcMain.handle('discordSend', async (_, [messageText]) => {

@@ -79,7 +79,7 @@ export const reducer = (state, action) => {
 
     case 'WRONG_ANSWER':
       clue = state.game[state.round][state.category][state.clueIndex];
-      console.warn(newState.players, newState.buzzingIn)
+      console.warn(newState.players, newState.buzzingIn);
       newState.players[state.buzzingIn].score -= state.wager || clue.value;
       const allPlayersBuzzed =
         Object.keys(state.alreadyAnswered).length === state.players.length;

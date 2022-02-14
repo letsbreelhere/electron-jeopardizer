@@ -3,7 +3,6 @@ import { useCallback, useEffect, useContext, useState } from 'react';
 import { ReducerContext } from './reducer';
 import useKeyEvent from './useKeyEvent';
 
-
 const FinalJeopardy = () => {
   const [step, setStep] = useState('CATEGORY');
   const { state } = useContext(ReducerContext);
