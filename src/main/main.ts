@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, protocol } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 
@@ -111,6 +111,20 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+
+app.on('ready', () => {
+  protocol.interceptFileProtocol(
+    'static',
+    (request, callback) => {
+      const url = request.url.substr(9); /* all urls start with 'static://' */
+      callback({ path: path.normalize(`${__dirname}/${url}`) });
+    },
+    (err) => {
+      if (err) console.error('Failed to register protocol');
+    }
+  );
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even

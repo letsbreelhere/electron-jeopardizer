@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parse } from 'node-html-parser';
 import DatePicker from 'react-date-picker';
@@ -15,6 +15,10 @@ const Setup = () => {
   const [playerCount, setPlayerCount] = useState(3);
   const navigate = useNavigate();
   const { state, dispatch } = useContext(ReducerContext);
+
+  useEffect(() => {
+    new Audio('static://../../assets/sounds/intro.wav').play();
+  }, []);
 
   const onClick = async () => {
     let game;
