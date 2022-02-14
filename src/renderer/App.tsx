@@ -1,10 +1,5 @@
-import { useEffect, useReducer } from 'react';
-import {
-  MemoryRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from 'react-router-dom';
+import { useState, useEffect, useReducer } from 'react';
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import Mousetrap from 'mousetrap';
 
 import { EventRegister } from 'react-native-event-listeners';
@@ -30,18 +25,6 @@ const keysToWatch = [
   'n',
 ];
 
-const NavigationListener = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    electron.ipc.on('openSettings', () =>
-      navigate('/settings', { replace: false })
-    );
-  }, []);
-
-  return null;
-};
-
 const App = () => {
   useEffect(() => {
     keysToWatch.forEach((n) => {
@@ -51,19 +34,25 @@ const App = () => {
     });
   }, []);
 
+  useEffect(() => {
+    electron.ipc.on('openSettings', () => setShowPrefs(true));
+  }, []);
+
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [showPrefs, setShowPrefs] = useState(false);
 
   return (
-    <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
-      <Router>
-        <NavigationListener />
-        <Routes>
-          <Route path="/" element={<Setup />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/game" element={<MainGame />} />
-        </Routes>
-      </Router>
-    </ReducerContext.Provider>
+    <>
+      {showPrefs && <Settings onClose={() => setShowPrefs(false)} />}
+      <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Setup />} />
+            <Route path="/game" element={<MainGame />} />
+          </Routes>
+        </Router>
+      </ReducerContext.Provider>
+    </>
   );
 };
 

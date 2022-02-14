@@ -22,7 +22,7 @@ const Board = ({ round, onClueSelect }) => {
             {clues.map((clue, i) => (
               <li key={clue.id}>
                 {!clue.completed && (
-                  <a onClick={() => onClueSelect(category, i)}>${clue.value}</a>
+                  <a className="clue-link" onClick={() => onClueSelect(category, i)}>${clue.value}</a>
                 )}
               </li>
             ))}
@@ -37,6 +37,10 @@ const ClueModal = ({ clue, onClose }) => {
   const [awaitingBuzz, setAwaitingBuzz] = useState(false);
   const [keyListener, setKeyListener] = useState(null);
   const { state, dispatch } = useContext(ReducerContext);
+
+  useEffect(() => {
+    electron.ipc.invoke('discordSend', `${state.category} for ${state.wager || clue.value}: ${clue.response}`)
+  }, []);
 
   const onKeyPressed = useCallback(
     (key) => {

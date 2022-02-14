@@ -1,6 +1,7 @@
 @import './common.scss';
 
 .settings {
+  z-index: 999;
   background: darken($blue, 10%);
   position: absolute;
   top: 0;
@@ -8,6 +9,20 @@
   width: 100vw;
   height: 100vh;
   padding-left: 2rem;
+
+  .header {
+    display: flex;
+    align-items: center;
+    .glyphicon {
+      margin-right: 1rem;
+    }
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+
+    h1 {
+      margin: 0;
+    }
+  }
 
   input,
   button {

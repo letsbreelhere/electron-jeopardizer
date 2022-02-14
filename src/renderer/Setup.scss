@@ -16,6 +16,7 @@
     align-items: center;
 
     .react-date-picker {
+      z-index: 0;
       div[class*='wrapper'] {
         border: none;
       }
