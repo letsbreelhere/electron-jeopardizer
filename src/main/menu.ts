@@ -198,7 +198,7 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
+            label: '&Open Custom Game...',
             accelerator: 'Ctrl+O',
           },
           {
@@ -208,6 +208,13 @@ export default class MenuBuilder {
               this.mainWindow.close();
             },
           },
+          {
+            label: '&Preferences',
+            accelerator: 'Ctrl+,',
+            click: () => {
+              // TODO: Send IPC event to open preferences view
+            },
+          }
         ],
       },
       {

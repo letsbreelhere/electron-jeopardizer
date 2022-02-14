@@ -15,6 +15,8 @@ import fetch from 'electron-fetch';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import * as discord from 'discord-webhook-node';
+import settings from 'electron-settings';
 
 import { resolveHtmlPath } from './util';
 export default class AppUpdater {
@@ -28,10 +30,14 @@ export default class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 const gamesPath = path.join(app.getPath('userData'), 'games');
+const makeGamesPath = () => !fs.existsSync(gamesPath) && fs.mkdirSync(gamesPath);
 
-const makeGamesPath = () => {
-  if (!fs.existsSync(gamesPath)) fs.mkdirSync(gamesPath);
-}
+ipcMain.handle('discordSend', async (_, [messageText]) => {
+  if (settings.hasSync('discordWebhookUrl')) {
+    const discordWebhook = new discord.Webhook(settings.getSync('discordWebhookUrl'));
+    discordWebhook.send(messageText)
+  }
+})
 
 ipcMain.handle('httpGet', async (_, [url]) => {
   const res = await fetch(url);
@@ -40,11 +46,7 @@ ipcMain.handle('httpGet', async (_, [url]) => {
 })
 
 ipcMain.handle('loadGameSetup', async (_, [name]) => {
-  let dieWith;
   const gamePath = path.join(gamesPath, name);
-  if (dieWith) {
-    throw dieWith;
-  }
 
   if (fs.existsSync(gamePath)) {
     return JSON.parse(fs.readFileSync(gamePath));
@@ -54,8 +56,7 @@ ipcMain.handle('loadGameSetup', async (_, [name]) => {
 })
 
 ipcMain.handle('saveGameSetup', async (_, [name, data]) => {
-  let dieWith;
-  makeGamesPath(err => { dieWith = err; });
+  makeGamesPath();
 
   await fs.writeFileSync(path.join(gamesPath, name), data);
   return true;

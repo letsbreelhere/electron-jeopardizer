@@ -227,9 +227,11 @@
   },
   "dependencies": {
     "classnames": "^2.3.1",
+    "discord-webhook-node": "^1.1.8",
     "electron-debug": "^3.2.0",
     "electron-fetch": "^1.7.4",
     "electron-log": "^4.4.4",
+    "electron-settings": "^4.0.2",
     "electron-updater": "^4.6.5",
     "history": "^5.2.0",
     "lowdb": "^3.0.0",

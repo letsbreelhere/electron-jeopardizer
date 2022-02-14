@@ -189,9 +189,9 @@ const WagerModal = ({ onFinish }) => {
 const MainGame = () => {
   const { state, dispatch } = useContext(ReducerContext);
 
-  const clue =
-    state.clueIndex !== null &&
-    state.game[state.round][state.category][state.clueIndex];
+  useEffect(() => {
+    electron.ipc.invoke('discordSend', 'Hello, world!');
+  }, [])
 
   return (
     <>
@@ -200,8 +200,8 @@ const MainGame = () => {
           onFinish={(wager) => dispatch({ type: 'SET_WAGER', wager })}
         />
       )}
-      {clue && (
-        <ClueModal clue={clue} onClose={() => dispatch({ type: 'END_CLUE' })} />
+      {state.clue && (
+        <ClueModal clue={state.clue} onClose={() => dispatch({ type: 'END_CLUE' })} />
       )}
       {state.round === 'finalJeopardy' ? (
         <FinalJeopardy />
