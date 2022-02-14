@@ -22,7 +22,12 @@ const Board = ({ round, onClueSelect }) => {
             {clues.map((clue, i) => (
               <li key={clue.id}>
                 {!clue.completed && (
-                  <a className="clue-link" onClick={() => onClueSelect(category, i)}>${clue.value}</a>
+                  <a
+                    className="clue-link"
+                    onClick={() => onClueSelect(category, i)}
+                  >
+                    ${clue.value}
+                  </a>
                 )}
               </li>
             ))}
@@ -39,8 +44,11 @@ const ClueModal = ({ clue, onClose }) => {
   const { state, dispatch } = useContext(ReducerContext);
 
   useEffect(() => {
-    electron.ipc.invoke('discordSend', `${state.category} for ${state.wager || clue.value}: ${clue.response}`)
-  }, []);
+    electron.ipc.invoke(
+      'discordSend',
+      `${state.category} for ${state.wager || clue.value}: ${clue.response}`
+    );
+  }, [state, clue]);
 
   const onKeyPressed = useCallback(
     (key) => {
@@ -62,21 +70,23 @@ const ClueModal = ({ clue, onClose }) => {
           case 'n':
             dispatch({ type: 'WRONG_ANSWER' });
             break;
+          default:
+            break;
         }
       }
     },
-    [state]
+    [state, dispatch]
   );
 
   useEffect(() => {
-    // HACK: Ideally we should be able to remove just the previous state's
-    // listener.
-    EventRegister.rmAll();
-
-    EventRegister.on('keyPressed', onKeyPressed);
-
-    return EventRegister.rmAll;
+    setKeyListener(EventRegister.on('keyPressed', onKeyPressed));
   }, [onKeyPressed]);
+
+  useEffect(() => {
+    return () => {
+      if (keyListener) EventRegister.rm(keyListener);
+    };
+  }, [keyListener]);
 
   return (
     <>
@@ -207,7 +217,7 @@ const MainGame = () => {
       {state.clue && (
         <ClueModal
           clue={state.clue}
-          onClose={() => dispatch({ type: 'END_CLUE' })}
+          onClose={() => dispatch({ type: 'STUMPER' })}
         />
       )}
       {state.round === 'finalJeopardy' ? (
