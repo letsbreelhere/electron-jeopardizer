@@ -13,7 +13,7 @@ export const initialState = {
   alreadyAnswered: {},
 };
 
-const finishClue = state => {
+const finishClue = (state) => {
   state.game[state.round][state.category][state.clueIndex].completed = true;
   state.buzzingIn = null;
   state.category = null;
@@ -21,7 +21,7 @@ const finishClue = state => {
   state.alreadyAnswered = {};
 
   const allClues = Object.values(state.game[state.round]).flat();
-  if (allClues.every(clue => clue.completed)) {
+  if (allClues.every((clue) => clue.completed)) {
     if (state.round === 'firstRound') {
       state.round = 'secondRound';
     } else {
@@ -29,7 +29,7 @@ const finishClue = state => {
       state.controlsBoard = null;
     }
   }
-}
+};
 
 export const reducer = (state, action) => {
   let newState = JSON.parse(JSON.stringify(state));
@@ -37,9 +37,9 @@ export const reducer = (state, action) => {
 
   switch (action.type) {
     case 'SETUP_COMPLETE':
-      newState.players = (new Array(action.playerCount).fill({})).map((_, i) => ({
-        name: `Player ${i+1}`,
-        score: 0
+      newState.players = new Array(action.playerCount).fill({}).map((_, i) => ({
+        name: `Player ${i + 1}`,
+        score: 0,
       }));
       newState.game = action.game;
       newState.round = 'firstRound';
@@ -80,7 +80,8 @@ export const reducer = (state, action) => {
     case 'WRONG_ANSWER':
       clue = state.game[state.round][state.category][state.clueIndex];
       newState.players[state.buzzingIn].score -= state.wager || clue.value;
-      const allPlayersBuzzed = Object.keys(state.alreadyAnswered).length === state.players.length
+      const allPlayersBuzzed =
+        Object.keys(state.alreadyAnswered).length === state.players.length;
       if (state.wager || allPlayersBuzzed) {
         finishClue(newState);
       }
@@ -103,12 +104,12 @@ export const reducer = (state, action) => {
   }
 
   return newState;
-}
+};
 
-export const derivedState = state => ({
+export const derivedState = (state) => ({
   ...state,
   isBuzzingIn: state.buzzingIn !== null,
-  currentPlayer: (state.buzzingIn !== null) && state.players[state.buzzingIn],
+  currentPlayer: state.buzzingIn !== null && state.players[state.buzzingIn],
   clue: state.game?.[state.round]?.[state.category]?.[state.clueIndex],
 });
 

@@ -6,7 +6,7 @@ const FinalJeopardy = () => {
   const [step, setStep] = useState('CATEGORY');
   const { state } = useContext(ReducerContext);
 
-  const onKeyPressed = useCallback(key => {
+  const onKeyPressed = useCallback((key) => {
     if (key === 'space') {
       setStep('CLUE');
     }
@@ -24,15 +24,13 @@ const FinalJeopardy = () => {
       <ul className="categories" />
       <div className="modal final-jeopardy-modal">
         <div className="content">
-          {step === 'CATEGORY' ? (
-            state.game.finalJeopardy.category
-          ) : (
-            state.game.finalJeopardy.text
-          )}
+          {step === 'CATEGORY'
+            ? state.game.finalJeopardy.category
+            : state.game.finalJeopardy.text}
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default FinalJeopardy;

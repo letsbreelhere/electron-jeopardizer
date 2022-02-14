@@ -212,9 +212,9 @@ export default class MenuBuilder {
             label: '&Preferences',
             accelerator: 'Ctrl+,',
             click: () => {
-              // TODO: Send IPC event to open preferences view
+              this.mainWindow.send('openSettings');
             },
-          }
+          },
         ],
       },
       {

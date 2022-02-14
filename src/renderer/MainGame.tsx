@@ -191,7 +191,7 @@ const MainGame = () => {
 
   useEffect(() => {
     electron.ipc.invoke('discordSend', 'Hello, world!');
-  }, [])
+  }, []);
 
   return (
     <>
@@ -201,7 +201,10 @@ const MainGame = () => {
         />
       )}
       {state.clue && (
-        <ClueModal clue={state.clue} onClose={() => dispatch({ type: 'END_CLUE' })} />
+        <ClueModal
+          clue={state.clue}
+          onClose={() => dispatch({ type: 'END_CLUE' })}
+        />
       )}
       {state.round === 'finalJeopardy' ? (
         <FinalJeopardy />

@@ -9,14 +9,12 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import fs from 'fs';
-import fetch from 'electron-fetch';
+import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+
 import MenuBuilder from './menu';
-import * as discord from 'discord-webhook-node';
-import settings from 'electron-settings';
+import ipcSetup from './ipc';
 
 import { resolveHtmlPath } from './util';
 export default class AppUpdater {
@@ -29,38 +27,7 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-const gamesPath = path.join(app.getPath('userData'), 'games');
-const makeGamesPath = () => !fs.existsSync(gamesPath) && fs.mkdirSync(gamesPath);
-
-ipcMain.handle('discordSend', async (_, [messageText]) => {
-  if (settings.hasSync('discordWebhookUrl')) {
-    const discordWebhook = new discord.Webhook(settings.getSync('discordWebhookUrl'));
-    discordWebhook.send(messageText)
-  }
-})
-
-ipcMain.handle('httpGet', async (_, [url]) => {
-  const res = await fetch(url);
-  const body = await res.text();
-  return body;
-})
-
-ipcMain.handle('loadGameSetup', async (_, [name]) => {
-  const gamePath = path.join(gamesPath, name);
-
-  if (fs.existsSync(gamePath)) {
-    return JSON.parse(fs.readFileSync(gamePath));
-  } else {
-    return null;
-  }
-})
-
-ipcMain.handle('saveGameSetup', async (_, [name, data]) => {
-  makeGamesPath();
-
-  await fs.writeFileSync(path.join(gamesPath, name), data);
-  return true;
-})
+ipcSetup();
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

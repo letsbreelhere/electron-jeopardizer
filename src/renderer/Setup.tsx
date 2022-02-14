@@ -99,7 +99,9 @@ const Setup = () => {
             <button
               type="button"
               className="inc"
-              onClick={() => playerCount < 10 && setPlayerCount(playerCount + 1)}
+              onClick={() =>
+                playerCount < 10 && setPlayerCount(playerCount + 1)
+              }
             >
               +
             </button>

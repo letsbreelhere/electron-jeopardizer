@@ -1,25 +1,31 @@
 import { parse } from 'node-html-parser';
 
 const htmlDecode = (input) => {
-  var doc = new DOMParser().parseFromString(input, "text/html");
+  var doc = new DOMParser().parseFromString(input, 'text/html');
   return doc.documentElement.textContent;
-}
+};
 
 const parseRound = (clueRoot, responseRoot, double) => {
-  const categories: Array<string> = clueRoot.querySelectorAll('td.category_name').map(c => htmlDecode(c.rawText));
+  const categories: Array<string> = clueRoot
+    .querySelectorAll('td.category_name')
+    .map((c) => htmlDecode(c.rawText));
   const clues = clueRoot.querySelectorAll('td.clue');
 
   let result: Object<string, object> = {};
-  categories.forEach(category => {
+  categories.forEach((category) => {
     result[category] = [];
-  })
+  });
 
-  const responses = responseRoot.querySelectorAll('td.clue').map(response =>
-    htmlDecode(response.querySelector('.correct_response')?.rawText) || 'UNKNOWN'
-  );
+  const responses = responseRoot
+    .querySelectorAll('td.clue')
+    .map(
+      (response) =>
+        htmlDecode(response.querySelector('.correct_response')?.rawText) ||
+        'UNKNOWN'
+    );
 
   clues.forEach((clue, i: number) => {
-    const col = i%6;
+    const col = i % 6;
     const category = categories[col];
     let value = clue.querySelector('.clue_value');
     const dailyDouble = !value;
@@ -38,29 +44,33 @@ const parseRound = (clueRoot, responseRoot, double) => {
         response: responses[i],
         dailyDouble,
         completed: !text,
-      }
-    ]
-  })
+      },
+    ];
+  });
 
   // Fix daily doubles
   Object.entries(result).forEach(([category, clues]) => {
     clues.forEach((clue, i) => {
       if (!clue.value) {
-        const value = Object.values(result).map(cs => cs[i].value).find(v => v);
+        const value = Object.values(result)
+          .map((cs) => cs[i].value)
+          .find((v) => v);
         result[category][i].value = value;
       }
-    })
+    });
   });
 
   return result;
-}
+};
 
 const parseFinalJeopardy = (clueRoot, responseRoot) => {
-  const category = htmlDecode(clueRoot.querySelector('.category_name').rawText)
-  const text = htmlDecode(clueRoot.querySelector('.clue_text').rawText)
-  const response = htmlDecode(responseRoot.querySelector('em.correct_response').rawText)
-  return { category, text, response }
-}
+  const category = htmlDecode(clueRoot.querySelector('.category_name').rawText);
+  const text = htmlDecode(clueRoot.querySelector('.clue_text').rawText);
+  const response = htmlDecode(
+    responseRoot.querySelector('em.correct_response').rawText
+  );
+  return { category, text, response };
+};
 
 export default async (clueHtml, responseHtml) => {
   const responseRoot = await parse(responseHtml);
@@ -78,11 +88,11 @@ export default async (clueHtml, responseHtml) => {
 
   const finalJeopardy = parseFinalJeopardy(
     clueRoot.querySelector('#final_jeopardy_round'),
-    responseRoot.querySelector('#final_jeopardy_round'),
+    responseRoot.querySelector('#final_jeopardy_round')
   );
   return {
     firstRound,
     secondRound,
     finalJeopardy,
   };
-}
+};
