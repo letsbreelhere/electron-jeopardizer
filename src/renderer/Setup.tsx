@@ -17,7 +17,7 @@ const Setup = () => {
   const { state, dispatch } = useContext(ReducerContext);
 
   useEffect(() => {
-    new Audio('static://../../assets/sounds/intro.wav').play();
+    new Audio('static://../../assets/sounds/intro.mp3').play();
   }, []);
 
   const onClick = async () => {
