@@ -5,12 +5,19 @@ import classNames from 'classnames';
 import { ReducerContext } from './reducer';
 import FinalJeopardy from './FinalJeopardy';
 import useKeyEvent from './useKeyEvent';
+import audio from './audio';
 
 import './App.scss';
 import './Scores.scss';
 
 const Board = ({ round, onClueSelect }) => {
   const { state } = useContext(ReducerContext);
+
+  useEffect(() => {
+    audio.play('reveal');
+    return audio.stop;
+  }, [state.round]);
+
   return (
     <ul className="categories">
       {Object.entries(round).map(([category, clues]) => (

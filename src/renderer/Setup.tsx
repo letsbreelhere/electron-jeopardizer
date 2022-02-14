@@ -7,6 +7,7 @@ import moment from 'moment';
 import './Setup.scss';
 import parseJ from './JarchiveParser';
 import { ReducerContext } from './reducer';
+import audio from './audio';
 
 const Setup = () => {
   const [date, setDate] = useState(new Date());
@@ -17,7 +18,8 @@ const Setup = () => {
   const { state, dispatch } = useContext(ReducerContext);
 
   useEffect(() => {
-    new Audio('static://../../assets/sounds/intro.mp3').play();
+    audio.play('intro');
+    return audio.stop;
   }, []);
 
   const onClick = async () => {
