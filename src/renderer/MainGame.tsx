@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useContext, useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { EventRegister } from 'react-native-event-listeners';
 
 import { ReducerContext } from './reducer';
 import FinalJeopardy from './FinalJeopardy';

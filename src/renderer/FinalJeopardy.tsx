@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useContext, useState } from 'react';
+
 import { ReducerContext } from './reducer';
-import { EventRegister } from 'react-native-event-listeners';
+import useKeyEvent from './useKeyEvent';
+
 
 const FinalJeopardy = () => {
   const [step, setStep] = useState('CATEGORY');
@@ -11,13 +13,7 @@ const FinalJeopardy = () => {
       setStep('CLUE');
     }
   }, []);
-
-  useEffect(() => {
-    EventRegister.rmAll();
-    EventRegister.on('keyPressed', onKeyPressed);
-
-    return EventRegister.rmAll;
-  }, []);
+  useKeyEvent(onKeyPressed);
 
   return (
     <>
