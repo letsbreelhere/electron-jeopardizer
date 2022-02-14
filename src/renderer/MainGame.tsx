@@ -5,6 +5,7 @@ import { EventRegister } from 'react-native-event-listeners';
 
 import { ReducerContext } from './reducer';
 import FinalJeopardy from './FinalJeopardy';
+import useKeyEvent from './useKeyEvent';
 
 import './App.scss';
 import './Scores.scss';
@@ -77,16 +78,7 @@ const ClueModal = ({ clue, onClose }) => {
     },
     [state, dispatch]
   );
-
-  useEffect(() => {
-    setKeyListener(EventRegister.on('keyPressed', onKeyPressed));
-  }, [onKeyPressed]);
-
-  useEffect(() => {
-    return () => {
-      if (keyListener) EventRegister.rm(keyListener);
-    };
-  }, [keyListener]);
+  useKeyEvent(onKeyPressed);
 
   return (
     <>
