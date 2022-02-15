@@ -74,6 +74,14 @@ export default class MenuBuilder {
           selector: 'hideOtherApplications:',
         },
         { label: 'Show All', selector: 'unhideAllApplications:' },
+        {
+          label: 'Preferences',
+          accelerator: 'Command+,',
+          selector: 'preferences:',
+          click: () => {
+            this.mainWindow.send('openSettings');
+          },
+        },
         { type: 'separator' },
         {
           label: 'Quit',

@@ -8,6 +8,7 @@ import Setup from './Setup';
 import MainGame from './MainGame';
 import { reducer, initialState, derivedState } from './reducer';
 import { ReducerContext } from './reducer';
+import audio from './audio';
 
 const keysToWatch = [
   '1',

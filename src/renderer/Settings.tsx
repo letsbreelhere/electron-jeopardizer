@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import Glyphicon from '@strongdm/glyphicon';
 
 import './Settings.scss';
+import audio from './audio';
 
 const Settings = ({ onClose }) => {
   const [discordWebhookUrl, setDiscordWebhookUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    electron.ipc
+  useEffect(async () => {
+    await audio.stop();
+    await electron.ipc
       .invoke('getPreference', 'discordWebhookUrl')
-      .then(setDiscordWebhookUrl);
+      .then((s) => setDiscordWebhookUrl(s || ''));
   }, []);
 
   const onChange = (e) => {
@@ -38,7 +40,7 @@ const Settings = ({ onClose }) => {
 
       <h3>Webhook URL</h3>
       <input
-        style={{ width: `${discordWebhookUrl.length}ch` }}
+        style={{ width: `${Math.max(discordWebhookUrl.length, 12)}ch` }}
         onChange={onChange}
         value={discordWebhookUrl}
       />
