@@ -155,6 +155,34 @@ ul.categories {
   }
 }
 
+@keyframes flip {
+  0% {
+    transform: scale(10%) rotateX(0deg);
+  }
+  100% {
+    transform: scale(100%) rotateX(360deg);
+  }
+}
+
+
+.flip-container {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  img.flipper {
+    width: 100vw;
+    position: relative;
+    animation: 1s ease-out 0s 1 flip
+  }
+}
+
 .wager-modal {
   .wager-content {
     display: flex;

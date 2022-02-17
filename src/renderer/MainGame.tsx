@@ -166,6 +166,7 @@ const WagerModal = ({ onFinish }) => {
 
   const max = Math.max(maxForRound, state.currentPlayer.score);
   const [wager, setWager] = useState(max);
+  const [showBanner, setShowBanner] = useState(true);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -173,12 +174,25 @@ const WagerModal = ({ onFinish }) => {
     }
   };
 
+  const onKeyPressed = useCallback(
+    (key) => {
+      if (key === 'space') setShowBanner(false);
+    },
+    [setShowBanner]
+  );
+  useKeyEvent(onKeyPressed);
+
   useEffect(() => {
     audio('daily_double.wav').play();
   }, [])
 
   return (
     <>
+      { showBanner && (
+        <div className="flip-container">
+          <img className="dd flipper" src={require('./images/daily_double.jpg')} />
+        </div>
+      )}
       <div className="shroud" />
       <div className="wager-modal modal">
         <h1>Daily Double!</h1>
@@ -187,7 +201,6 @@ const WagerModal = ({ onFinish }) => {
           <div className="input-box">
             <span className="prefix">$</span>
             <input
-              autoFocus
               onKeyDown={handleKeyDown}
               type="numeric"
               value={wager}
@@ -203,10 +216,6 @@ const WagerModal = ({ onFinish }) => {
 
 const MainGame = () => {
   const { state, dispatch } = useContext(ReducerContext);
-
-  useEffect(() => {
-    electron.ipc.invoke('discordSend', 'Hello, world!');
-  }, []);
 
   return (
     <>
