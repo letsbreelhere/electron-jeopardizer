@@ -8,7 +8,7 @@ EventRegister.on('stopAudio', async () => {
 
 EventRegister.on('playAudio', async (sound: string) => {
   window.activeAudio.forEach((a) => a.pause());
-  const audio = new Audio(`static://../../assets/sounds/${sound}.mp3`);
+  const audio = new Audio(`static://${sound}.mp3`);
   window.activeAudio = [...activeAudio, audio];
   await audio.play();
 });

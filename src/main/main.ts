@@ -54,18 +54,18 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
+
+const getAssetPath = (...paths: string[]): string => {
+  return path.join(RESOURCES_PATH, ...paths);
+};
+
 const createWindow = async () => {
   if (isDevelopment) {
     await installExtensions();
   }
-
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
-
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -117,7 +117,7 @@ app.on('ready', () => {
     'static',
     (request, callback) => {
       const url = request.url.substr(9); /* all urls start with 'static://' */
-      callback({ path: path.normalize(`${__dirname}/${url}`) });
+      callback({ path: getAssetPath('sounds', url) });
     },
     (err) => {
       if (err) console.error('Failed to register protocol');
