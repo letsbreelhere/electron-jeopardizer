@@ -169,9 +169,13 @@ const WagerModal = ({ onFinish }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (wager < max && wager > 5) onFinish(wager);
+      if (wager <= max && wager >= 5) onFinish(wager);
     }
   };
+
+  useEffect(() => {
+    audio('daily_double.wav').play();
+  }, [])
 
   return (
     <>
