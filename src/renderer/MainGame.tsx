@@ -52,7 +52,7 @@ const ClueModal = ({ clue, onClose }) => {
   useEffect(() => {
     electron.ipc.invoke(
       'discordSend',
-      `${state.category} for ${state.wager || clue.value}: ${clue.response}`
+      `${state.category} for $${state.wager || clue.value}: ${clue.response}`
     );
   }, [state, clue]);
 

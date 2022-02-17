@@ -9,13 +9,13 @@ const Settings = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(async () => {
-    await audio.stop();
     await electron.ipc
       .invoke('getPreference', 'discordWebhookUrl')
       .then((s) => setDiscordWebhookUrl(s || ''));
   }, []);
 
   const onChange = (e) => {
+    setDiscordWebhookUrl(e.target.value)
     electron.ipc.invoke('setPreference', 'discordWebhookUrl', e.target.value);
   };
 
