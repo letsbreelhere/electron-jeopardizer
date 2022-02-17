@@ -1,8 +1,14 @@
 window.sound = new Audio();
-const audio = (sound) => {
+
+const play = (sound) => {
   window.sound.pause();
   window.sound.src = `static://${sound}`
   return window.sound;
 }
 
-export default audio;
+const stop = window.sound.pause;
+
+export default {
+  play,
+  stop,
+};

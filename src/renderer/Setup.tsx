@@ -17,7 +17,7 @@ const Setup = () => {
   const navigate = useNavigate();
   const { state, dispatch } = useContext(ReducerContext);
 
-  const sound = audio('intro.wav');
+  const sound = audio.play('intro.wav');
 
   const onClick = async () => {
     sound.pause();

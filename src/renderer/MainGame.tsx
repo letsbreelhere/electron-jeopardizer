@@ -14,7 +14,7 @@ const Board = ({ round, onClueSelect }) => {
   const { state } = useContext(ReducerContext);
 
   useEffect(() => {
-    audio('board.wav').play();
+    audio.play('board.wav');
   }, [state.round]);
 
   return (
@@ -183,7 +183,7 @@ const WagerModal = ({ onFinish }) => {
   useKeyEvent(onKeyPressed);
 
   useEffect(() => {
-    audio('daily_double.wav').play();
+    audio.play('daily_double.wav');
   }, [])
 
   return (
