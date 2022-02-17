@@ -14,8 +14,7 @@ const Board = ({ round, onClueSelect }) => {
   const { state } = useContext(ReducerContext);
 
   useEffect(() => {
-    audio.play('board');
-    return audio.stop;
+    audio('board.wav').play();
   }, [state.round]);
 
   return (

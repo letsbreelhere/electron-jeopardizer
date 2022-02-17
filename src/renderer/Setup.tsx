@@ -17,12 +17,10 @@ const Setup = () => {
   const navigate = useNavigate();
   const { state, dispatch } = useContext(ReducerContext);
 
-  useEffect(() => {
-    audio.play('intro');
-    return audio.stop;
-  }, []);
+  const sound = audio('intro.wav');
 
   const onClick = async () => {
+    sound.pause();
     let game;
     setLoading(true);
     setLoadStep('Getting clues...');
@@ -72,6 +70,10 @@ const Setup = () => {
 
     await navigate('/game', { replace: true });
   };
+
+  useEffect(() => {
+    sound.play();
+  }, []);
 
   return (
     <div className="setup">
