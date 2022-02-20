@@ -11,15 +11,10 @@ import { ReducerContext } from './reducer';
 import audio from './audio';
 
 const keysToWatch = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
+  'f1',
+  'f2',
+  'f3',
+  'f4',
   'space',
   'escape',
   'y',

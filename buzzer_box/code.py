@@ -13,7 +13,6 @@ BOARD_PINS = [
     board.GP0,
     board.GP1,
     board.GP2,
-    board.GP3,
     board.GP4,
 ]
 
@@ -29,8 +28,7 @@ OUTPUTS = [
     Keycode.F1,
     Keycode.F2,
     Keycode.F3,
-    Keycode.F4,
-    Keycode.F5
+    Keycode.F4
 ]
 
 time.sleep(1)  # Sleep for a bit to avoid a race condition on some systems
@@ -42,7 +40,7 @@ PIN_HISTORIES = {
 
 while True:
     # led.value = not pin.value
-    for pin in range(5):
+    for pin in range(4):
         newVal = PINS[pin].value
         if newVal != PIN_HISTORIES.get(pin, True):
             PIN_HISTORIES[pin] = newVal

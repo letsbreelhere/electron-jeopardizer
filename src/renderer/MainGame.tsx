@@ -63,10 +63,10 @@ const ClueModal = ({ clue, onClose }) => {
         return;
       }
 
-      if (!state.isBuzzingIn) {
-        const buzzingIn = Number(key);
-        if (buzzingIn > 0 && buzzingIn <= state.players.length) {
-          dispatch({ type: 'BUZZ_IN', index: Number(key) - 1 });
+      if (!state.isBuzzingIn && key.match(/^f\d$/)) {
+        const buzzingIn = Number(key.match(/\d/)[0]);
+        if (buzzingIn <= state.players.length) {
+          dispatch({ type: 'BUZZ_IN', index: buzzingIn - 1 });
         }
       } else {
         switch (key) {
