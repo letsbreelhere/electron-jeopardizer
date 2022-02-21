@@ -68,7 +68,9 @@ const ClueModal = ({ clue, onClose }) => {
         if (buzzingIn <= state.players.length) {
           dispatch({ type: 'BUZZ_IN', index: buzzingIn - 1 });
         }
-      } else {
+      }
+
+      if (state.isBuzzingIn) {
         switch (key) {
           case 'y':
             dispatch({ type: 'CORRECT_ANSWER' });
@@ -184,13 +186,16 @@ const WagerModal = ({ onFinish }) => {
 
   useEffect(() => {
     audio.play('daily_double.wav');
-  }, [])
+  }, []);
 
   return (
     <>
-      { showBanner && (
+      {showBanner && (
         <div className="flip-container">
-          <img className="dd flipper" src={require('./images/daily_double.jpg')} />
+          <img
+            className="dd flipper"
+            src={require('./images/daily_double.jpg')}
+          />
         </div>
       )}
       <div className="shroud" />
