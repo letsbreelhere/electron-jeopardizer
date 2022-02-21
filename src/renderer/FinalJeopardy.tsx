@@ -25,9 +25,9 @@ const FinalJeopardy = () => {
 
   useEffect(() => {
     if (step === 'CLUE') {
-      audio.play('reveal.wav');
+      audio.setup('reveal.wav').play;
     } else if (step === 'ANSWERING') {
-      audio.play('final_jeopardy.wav');
+      audio.setup('final_jeopardy.wav').play;
     }
 
     return audio.stop;

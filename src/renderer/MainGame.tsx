@@ -14,7 +14,7 @@ const Board = ({ round, onClueSelect }) => {
   const { state } = useContext(ReducerContext);
 
   useEffect(() => {
-    audio.play('board.wav');
+    audio.setup('board.wav').play();
   }, [state.round]);
 
   return (
@@ -33,6 +33,7 @@ const Board = ({ round, onClueSelect }) => {
                     onClick={() => onClueSelect(category, i)}
                   >
                     ${clue.value}
+                    {clue.dailyDouble && '!'}
                   </a>
                 )}
               </li>
@@ -178,14 +179,20 @@ const WagerModal = ({ onFinish }) => {
 
   const onKeyPressed = useCallback(
     (key) => {
-      if (key === 'space') setShowBanner(false);
+      if (key === 'space') {
+        if (!showBanner && wager <= max && wager >= 5) {
+          onFinish(wager);
+        } else if (showBanner) {
+          setShowBanner(false);
+        }
+      }
     },
-    [setShowBanner]
+    [setShowBanner, showBanner, wager]
   );
   useKeyEvent(onKeyPressed);
 
   useEffect(() => {
-    audio.play('daily_double.wav');
+    audio.setup('daily_double.wav').play();
   }, []);
 
   return (
