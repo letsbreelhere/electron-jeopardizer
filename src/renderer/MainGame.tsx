@@ -54,7 +54,7 @@ const ClueModal = ({ clue, onClose }) => {
       'discordSend',
       `${state.category} for $${state.wager || clue.value}: ${clue.response}`
     );
-  }, [state, clue]);
+  }, []);
 
   const onKeyPressed = useCallback(
     (key) => {
