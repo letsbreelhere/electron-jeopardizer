@@ -33,7 +33,6 @@ const Board = ({ round, onClueSelect }) => {
                     onClick={() => onClueSelect(category, i)}
                   >
                     ${clue.value}
-                    {clue.dailyDouble && '!'}
                   </a>
                 )}
               </li>
@@ -49,6 +48,8 @@ const ClueModal = ({ clue, onClose }) => {
   const [awaitingBuzz, setAwaitingBuzz] = useState(false);
   const [keyListener, setKeyListener] = useState(null);
   const { state, dispatch } = useContext(ReducerContext);
+  const [ready, setReady] = useState(false);
+  const [lockedOut, setLockedOut] = useState(new Set());
 
   useEffect(() => {
     electron.ipc.invoke(
@@ -59,15 +60,34 @@ const ClueModal = ({ clue, onClose }) => {
 
   const onKeyPressed = useCallback(
     (key) => {
+      if (!ready && key === 'space') {
+        setReady(true);
+      }
+
       if (key === 'escape') {
         dispatch({ type: 'STUMPER' });
         return;
       }
 
       if (!state.isBuzzingIn && key.match(/^f\d$/)) {
-        const buzzingIn = Number(key.match(/\d/)[0]);
-        if (buzzingIn <= state.players.length) {
-          dispatch({ type: 'BUZZ_IN', index: buzzingIn - 1 });
+        const buzzingIn = Number(key.match(/\d/)[0]) - 1;
+        if (buzzingIn >= state.players.length) return;
+
+        if (ready && !lockedOut.has(buzzingIn)) {
+          dispatch({ type: 'BUZZ_IN', index: buzzingIn });
+        } else {
+          setLockedOut((lo) => {
+            const newLo = new Set(lo);
+            newLo.add(buzzingIn);
+            return newLo;
+          });
+          setTimeout(() => {
+            setLockedOut((lo) => {
+              const newLo = new Set(lo);
+              newLo.delete(buzzingIn);
+              return newLo;
+            });
+          }, 250);
         }
       }
 
@@ -84,15 +104,20 @@ const ClueModal = ({ clue, onClose }) => {
         }
       }
     },
-    [state, dispatch]
+    [state, dispatch, ready, setReady, lockedOut, setLockedOut]
   );
   useKeyEvent(onKeyPressed);
 
   return (
     <>
       <div className="shroud" onClick={onClose} />
-      <div className="clue-modal modal">
+      <div className={classNames('clue-modal modal', { ready })}>
         <div className="clue-text">{clue.text}</div>
+        <div className="lockouts">{state.players.map((player, i) => (
+          <div className={lockedOut.has(i) && "show"}>
+            {player.name}
+          </div>
+        ))}</div>
       </div>
     </>
   );

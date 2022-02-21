@@ -149,9 +149,32 @@ ul.categories {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
+  border: 10px solid transparent;
+
+  &.ready {
+    border-color: $yellow;
+  }
 
   .clue-text {
     margin: calc(25%);
+  }
+
+  .lockouts {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100vw;
+
+    color: transparent;
+    font-family: 'Swiss 911';
+    .show {
+      color: red;
+      text-decoration: line-through;
+      text-transform: none;
+    }
   }
 }
 
