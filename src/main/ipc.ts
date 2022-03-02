@@ -33,6 +33,7 @@ const ipcSetup = () => {
 
   ipcMain.handle('loadGameSetup', async (_, [name]) => {
     const gamePath = path.join(gamesPath, name);
+    console.warn(gamePath)
 
     if (fs.existsSync(gamePath)) {
       return JSON.parse(fs.readFileSync(gamePath));

@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
 export const initialState = {
-  players: null,
+  players: [],
   game: null,
   round: 'setup',
   category: null,
@@ -25,6 +25,8 @@ const finishClue = (state) => {
   if (allClues.every((clue) => clue.completed)) {
     if (state.round === 'firstRound') {
       state.round = 'secondRound';
+      const minScore = Math.min(...state.players.map((p) => p.score));
+      state.controlsBoard = state.players.map((p) => p.score).indexOf(minScore);
     } else {
       state.round = 'finalJeopardy';
       state.controlsBoard = null;
@@ -110,7 +112,10 @@ export const reducer = (state, action) => {
 export const derivedState = (state) => ({
   ...state,
   isBuzzingIn: state.buzzingIn !== null,
-  currentPlayer: state.buzzingIn !== null && state.players[state.buzzingIn],
+  currentPlayer:
+    state.buzzingIn !== null
+      ? state.players[state.buzzingIn]
+      : state.players[state.controlsBoard],
   clue: state.game?.[state.round]?.[state.category]?.[state.clueIndex],
 });
 
