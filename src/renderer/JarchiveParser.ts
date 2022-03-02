@@ -28,12 +28,13 @@ const parseRound = (clueRoot, responseRoot, double) => {
     const col = i % 6;
     const category = categories[col];
     let value = clue.querySelector('.clue_value');
-    const dailyDouble = !value;
     if (value) {
       value = Number(value.rawText.slice(1));
     }
 
-    const text = htmlDecode(clue.querySelector('.clue_text')?.rawText);
+    const rawClueText = clue.querySelector('.clue_text')?.rawText;
+    const text = rawClueText && htmlDecode(rawClueText);
+    const dailyDouble = !value && !!text;
 
     result[category] = [
       ...result[category],

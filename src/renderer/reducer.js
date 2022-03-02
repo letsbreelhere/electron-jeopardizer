@@ -19,6 +19,7 @@ const finishClue = (state) => {
   state.category = null;
   state.clueIndex = null;
   state.alreadyAnswered = {};
+  state.wager = null;
 
   const allClues = Object.values(state.game[state.round]).flat();
   if (allClues.every((clue) => clue.completed)) {
