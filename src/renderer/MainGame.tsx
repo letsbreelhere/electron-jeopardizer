@@ -113,11 +113,11 @@ const ClueModal = ({ clue, onClose }) => {
       <div className="shroud" onClick={onClose} />
       <div className={classNames('clue-modal modal', { ready })}>
         <div className="clue-text">{clue.text}</div>
-        <div className="lockouts">{state.players.map((player, i) => (
-          <div className={lockedOut.has(i) && "show"}>
-            {player.name}
-          </div>
-        ))}</div>
+        <div className="lockouts">
+          {state.players.map((player, i) => (
+            <div className={lockedOut.has(i) && 'show'}>{player.name}</div>
+          ))}
+        </div>
       </div>
     </>
   );
@@ -158,31 +158,36 @@ const ScoreDisplay = () => {
     <div className="score-display">
       {players.map((player, i) => {
         const negative = player.score < 0;
-          return (
-        <div
-          key={i}
-          className={classNames('player', {
-            active:
-              state.buzzingIn === i ||
-              (!state.isBuzzingIn && !state.clue && state.controlsBoard === i),
-          })}
-        >
+        return (
           <div
-            onClick={() => !editingName && setEditingName(i)}
-            className="name"
+            key={i}
+            className={classNames('player', {
+              active:
+                state.buzzingIn === i ||
+                (!state.isBuzzingIn &&
+                  !state.clue &&
+                  state.controlsBoard === i),
+            })}
           >
-            {editingName === i ? (
-              <NameEditor
-                value={player.name}
-                onSave={(name) => saveName(name, i)}
-              />
-            ) : (
-              player.name
-            )}
+            <div
+              onClick={() => !editingName && setEditingName(i)}
+              className="name"
+            >
+              {editingName === i ? (
+                <NameEditor
+                  value={player.name}
+                  onSave={(name) => saveName(name, i)}
+                />
+              ) : (
+                player.name
+              )}
+            </div>
+            <div className={classNames('score', { negative })}>
+              {negative && '-'}${Math.abs(player.score)}
+            </div>
           </div>
-          <div className={classNames("score", { negative })}>{negative && "-"}${Math.abs(player.score)}</div>
-        </div>
-      )})}
+        );
+      })}
     </div>
   );
 };

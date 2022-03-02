@@ -15,7 +15,7 @@ const Settings = ({ onClose }) => {
   }, []);
 
   const onChange = (e) => {
-    setDiscordWebhookUrl(e.target.value)
+    setDiscordWebhookUrl(e.target.value);
     electron.ipc.invoke('setPreference', 'discordWebhookUrl', e.target.value);
   };
 

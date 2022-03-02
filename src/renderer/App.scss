@@ -187,7 +187,6 @@ ul.categories {
   }
 }
 
-
 .flip-container {
   z-index: 1000;
   position: absolute;
@@ -202,7 +201,7 @@ ul.categories {
   img.flipper {
     width: 100vw;
     position: relative;
-    animation: 1s ease-out 0s 1 flip
+    animation: 1s ease-out 0s 1 flip;
   }
 }
 
