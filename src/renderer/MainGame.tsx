@@ -156,7 +156,9 @@ const ScoreDisplay = () => {
 
   return (
     <div className="score-display">
-      {players.map((player, i) => (
+      {players.map((player, i) => {
+        const negative = player.score < 0;
+          return (
         <div
           key={i}
           className={classNames('player', {
@@ -178,9 +180,9 @@ const ScoreDisplay = () => {
               player.name
             )}
           </div>
-          <div className="score">${player.score}</div>
+          <div className={classNames("score", { negative })}>{negative && "-"}${Math.abs(player.score)}</div>
         </div>
-      ))}
+      )})}
     </div>
   );
 };

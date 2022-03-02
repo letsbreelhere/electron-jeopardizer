@@ -26,6 +26,12 @@
       border-color: $yellow;
     }
   }
+
+  .score {
+    &.negative {
+      color: $red;
+    }
+  }
 }
 
 input.name-edit {
