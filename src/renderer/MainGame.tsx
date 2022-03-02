@@ -48,7 +48,7 @@ const ClueModal = ({ clue, onClose }) => {
   const [awaitingBuzz, setAwaitingBuzz] = useState(false);
   const [keyListener, setKeyListener] = useState(null);
   const { state, dispatch } = useContext(ReducerContext);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(!!state.wager);
   const [lockedOut, setLockedOut] = useState(new Set());
 
   useEffect(() => {
