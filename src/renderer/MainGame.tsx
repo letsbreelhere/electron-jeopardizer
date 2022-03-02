@@ -11,11 +11,19 @@ import './App.scss';
 import './Scores.scss';
 
 const Board = ({ round, onClueSelect }) => {
-  const { state } = useContext(ReducerContext);
+  const { state, dispatch } = useContext(ReducerContext);
 
   useEffect(() => {
     audio.setup('board.wav').play();
   }, [state.round]);
+
+  const onKeyPressed = useCallback((key) => {
+    if (key === 'tab') {
+      dispatch({ type: 'NEXT_IN_CONTROL' });
+    }
+  });
+
+  useKeyEvent(onKeyPressed);
 
   return (
     <ul className="categories">

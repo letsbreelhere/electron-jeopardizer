@@ -106,6 +106,10 @@ export const reducer = (state, action) => {
       finishClue(newState);
       break;
 
+    case 'NEXT_IN_CONTROL':
+      newState.controlsBoard = (state.controlsBoard + 1) % state.players.length;
+      break;
+
     default:
       throw `Unknown action type ${action.type}`;
   }

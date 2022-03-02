@@ -13,7 +13,17 @@ import Setup from './Setup';
 import MainGame from './MainGame';
 import { ReducerContext, reducer, initialState, derivedState } from './reducer';
 
-const keysToWatch = ['f1', 'f2', 'f3', 'f4', 'space', 'escape', 'y', 'n'];
+const keysToWatch = [
+  'f1',
+  'f2',
+  'f3',
+  'f4',
+  'space',
+  'escape',
+  'tab',
+  'y',
+  'n',
+];
 
 const Init = () => {
   const navigate = useNavigate();
