@@ -146,11 +146,17 @@ const NameEditor = ({ value, onSave }) => {
 
 const ScoreDisplay = () => {
   const [editingName, setEditingName] = useState(null);
+  const [editingScore, setEditingScore] = useState(null);
   const { state, dispatch } = useContext(ReducerContext);
 
   const saveName = (name, i) => {
     dispatch({ type: 'CHANGE_NAME', index: i, name });
     setEditingName(null);
+  };
+
+  const saveScore = (score, i) => {
+    dispatch({ type: 'CHANGE_SCORE', index: i, score });
+    setEditingScore(null);
   };
   const players = state.players;
 
@@ -182,8 +188,18 @@ const ScoreDisplay = () => {
                 player.name
               )}
             </div>
-            <div className={classNames('score', { negative })}>
-              {negative && '-'}${Math.abs(player.score)}
+            <div
+              onClick={() => !editingScore && setEditingScore(i)}
+              className={classNames('score', { negative })}
+            >
+              {editingScore === i ? (
+                <NameEditor
+                  value={player.score}
+                  onSave={(score) => saveScore(score, i)}
+                />
+              ) : (
+                `${negative ? '-' : ''}$${Math.abs(player.score)}`
+              )}
             </div>
           </div>
         );

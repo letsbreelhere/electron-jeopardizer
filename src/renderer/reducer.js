@@ -73,6 +73,10 @@ export const reducer = (state, action) => {
       newState.players[action.index].name = action.name;
       break;
 
+    case 'CHANGE_SCORE':
+      newState.players[action.index].score = Number(action.score);
+      break;
+
     case 'BUZZ_IN':
       if (!state.alreadyAnswered[action.index]) {
         newState.buzzingIn = action.index;
