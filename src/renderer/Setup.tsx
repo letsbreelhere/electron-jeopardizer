@@ -34,7 +34,7 @@ const Setup = () => {
     } else {
       const clueHtml = await electron.ipc.invoke(
         'httpGet',
-        `http://www.j-archive.com/search.php?search=date%3A${formattedDate}`
+        `http://www.j-archive.com/search.php?search=date:${formattedDate}`
       );
       const img = parse(clueHtml).querySelector('img.game_dynamics');
       if (img) {
