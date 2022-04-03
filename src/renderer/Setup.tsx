@@ -34,7 +34,7 @@ const Setup = () => {
     } else {
       const clueHtml = await electron.ipc.invoke(
         'httpGet',
-        `http://www.j-archive.com/search.php?search=date:${formattedDate}`
+        `https://www.j-archive.com/search.php?search=date:${formattedDate}`
       );
       const img = parse(clueHtml).querySelector('img.game_dynamics');
       if (img) {
@@ -42,7 +42,7 @@ const Setup = () => {
         setLoadStep('Getting responses...');
         const responseHtml = await electron.ipc.invoke(
           'httpGet',
-          `http://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
+          `https://www.j-archive.com/showgameresponses.php?game_id=${gameId}`
         );
         game = await parseJ(clueHtml, responseHtml);
         await electron.ipc.invoke(
