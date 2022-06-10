@@ -21,7 +21,7 @@ const Board = ({ round, onClueSelect }) => {
     if (key === 'tab') {
       dispatch({ type: 'NEXT_IN_CONTROL' });
     }
-  });
+  }, []);
 
   useKeyEvent(onKeyPressed);
 

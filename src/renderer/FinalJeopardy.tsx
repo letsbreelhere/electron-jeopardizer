@@ -25,12 +25,10 @@ const FinalJeopardy = () => {
 
   useEffect(() => {
     if (step === 'CLUE') {
-      audio.setup('reveal.wav').play;
+      audio.setup('reveal.wav').play();
     } else if (step === 'ANSWERING') {
-      audio.setup('final_jeopardy.wav').play;
+      audio.setup('final_jeopardy.wav').play();
     }
-
-    return audio.stop;
   }, [step]);
 
   return (
