@@ -35,6 +35,8 @@ const parseRound = (clueRoot, responseRoot, double) => {
     const rawClueText = clue.querySelector('.clue_text')?.rawText;
     const text = rawClueText && htmlDecode(rawClueText);
     const dailyDouble = !value && !!text;
+    const mediaClue = clue.querySelector('.clue_text').querySelector('a');
+    const mediaUrl = mediaClue && mediaClue.getAttribute('href');
 
     result[category] = [
       ...result[category],
@@ -45,6 +47,7 @@ const parseRound = (clueRoot, responseRoot, double) => {
         response: responses[i],
         dailyDouble,
         completed: !text,
+        mediaUrl,
       },
     ];
   });

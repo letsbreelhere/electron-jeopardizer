@@ -58,6 +58,8 @@ const ClueModal = ({ clue, onClose }) => {
   const { state, dispatch } = useContext(ReducerContext);
   const [ready, setReady] = useState(!!state.wager);
   const [lockedOut, setLockedOut] = useState(new Set());
+  const [brokenMedia, setBrokenMedia] = useState(false);
+  const [showMedia, setShowMedia] = useState(false);
 
   useEffect(() => {
     electron.ipc.invoke(
@@ -120,7 +122,31 @@ const ClueModal = ({ clue, onClose }) => {
     <>
       <div className="shroud" onClick={onClose} />
       <div className={classNames('clue-modal modal', { ready })}>
+        {clue.mediaUrl && (brokenMedia || !showMedia) && (
+          <img
+            className="media-icon"
+            onClick={() => {
+              if (!brokenMedia) {
+                setShowMedia(true);
+                setReady(true);
+              }
+            }}
+            src={
+              brokenMedia
+                ? require('./images/broken-image.png')
+                : require('./images/image-icon.png')
+            }
+          />
+        )}
         <div className="clue-text">{clue.text}</div>
+        {clue.mediaUrl && (
+          <img
+            className={classNames('media-clue', { hidden: !showMedia })}
+            onError={() => setBrokenMedia(true)}
+            onClick={() => setShowMedia(false)}
+            src={clue.mediaUrl}
+          />
+        )}
         <div className="lockouts">
           {state.players.map((player, i) => (
             <div className={lockedOut.has(i) && 'show'}>{player.name}</div>
