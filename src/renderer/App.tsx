@@ -25,12 +25,17 @@ const keysToWatch = [
   'n',
 ];
 
-const Init = () => {
+const TitleScreen = () => {
   const navigate = useNavigate();
   const onClick = () => navigate('/setup', { replace: true });
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }} onClick={onClick}></div>
+    <a className="init" onClick={onClick}>
+      <img alt="Jeopardy Logo" src={require('./images/jeopardy_logo.svg')} />
+      <p>
+        Click to continue
+      </p>
+    </a>
   );
 };
 
@@ -56,7 +61,7 @@ const App = () => {
       <ReducerContext.Provider value={{ state: derivedState(state), dispatch }}>
         <Router>
           <Routes>
-            <Route path="/" element={<Init />} />
+            <Route path="/" element={<TitleScreen />} />
             <Route path="/setup" element={<Setup />} />
             <Route path="/game" element={<MainGame />} />
           </Routes>
