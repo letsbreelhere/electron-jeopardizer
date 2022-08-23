@@ -28,6 +28,10 @@ const FinalJeopardy = () => {
       audio.setup('reveal.wav').play();
     } else if (step === 'ANSWERING') {
       audio.setup('final_jeopardy.wav').play();
+      electron.ipc.invoke(
+        'discordSend',
+        `FINAL JEOPARDY (${state.game.finalJeopardy.category}): ${state.game.finalJeopardy.response}`
+      );
     }
   }, [step]);
 

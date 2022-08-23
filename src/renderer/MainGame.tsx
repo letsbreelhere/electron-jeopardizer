@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { ReducerContext } from './reducer';
 import FinalJeopardy from './FinalJeopardy';
+import DailyDouble from './DailyDouble';
 import useKeyEvent from './useKeyEvent';
 import audio from './audio';
 
@@ -149,7 +150,7 @@ const ClueModal = ({ clue, onClose }) => {
         )}
         <div className="lockouts">
           {state.players.map((player, i) => (
-            <div className={lockedOut.has(i) && 'show'}>{player.name}</div>
+            <div key={i} className={lockedOut.has(i) ? 'show' : ''}>{player.name}</div>
           ))}
         </div>
       </div>
@@ -242,82 +243,12 @@ const ScoreDisplay = () => {
   );
 };
 
-const WagerModal = ({ onFinish }) => {
-  const { state, dispatch } = useContext(ReducerContext);
-
-  // TODO: Older games have different round maxes. This should pull the maximum
-  // score for a clue in the current round.
-  const maxForRound = state.round === 'firstRound' ? 1000 : 2000;
-
-  const max = Math.max(maxForRound, state.currentPlayer.score);
-  const [wager, setWager] = useState(max);
-  const [showBanner, setShowBanner] = useState(true);
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (wager <= max && wager >= 5) onFinish(wager);
-    }
-  };
-
-  const onKeyPressed = useCallback(
-    (key) => {
-      if (key === 'space') {
-        if (!showBanner && wager <= max && wager >= 5) {
-          onFinish(wager);
-        } else if (showBanner) {
-          setShowBanner(false);
-        }
-      }
-    },
-    [setShowBanner, showBanner, wager]
-  );
-  useKeyEvent(onKeyPressed);
-
-  useEffect(() => {
-    audio.setup('daily_double.wav').play();
-  }, []);
-
-  return (
-    <>
-      {showBanner && (
-        <div className="flip-container">
-          <img
-            className="dd flipper"
-            src={require('./images/daily_double.jpg')}
-          />
-        </div>
-      )}
-      <div className="shroud" />
-      <div className="wager-modal modal">
-        <h1>Daily Double!</h1>
-        <div className="wager-content">
-          What is your wager?
-          <div className="input-box">
-            <span className="prefix">$</span>
-            <input
-              onKeyDown={handleKeyDown}
-              type="numeric"
-              value={wager}
-              onChange={(e) => setWager(Number(e.target.value))}
-              onFocus={(e) => e.target.select()}
-            />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
 const MainGame = () => {
   const { state, dispatch } = useContext(ReducerContext);
 
   return (
     <>
-      {state.ddClue && (
-        <WagerModal
-          onFinish={(wager) => dispatch({ type: 'SET_WAGER', wager })}
-        />
-      )}
+      {state.ddClue && <DailyDouble />}
       {state.clue && (
         <ClueModal
           clue={state.clue}
