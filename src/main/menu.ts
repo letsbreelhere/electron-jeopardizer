@@ -82,6 +82,14 @@ export default class MenuBuilder {
             this.mainWindow.send('openSettings');
           },
         },
+        {
+          label: '&Next Round',
+          accelerator: 'Command+N,',
+          selector: 'nextRound:',
+          click: () => {
+            this.mainWindow.send('forceNextRound');
+          },
+        },
         { type: 'separator' },
         {
           label: 'Quit',
@@ -221,6 +229,18 @@ export default class MenuBuilder {
             accelerator: 'Ctrl+,',
             click: () => {
               this.mainWindow.send('openSettings');
+            },
+          },
+        ],
+      },
+      {
+        label: '&Game',
+        submenu: [
+          {
+            label: '&Next Round',
+            accelerator: 'Ctrl+N,',
+            click: () => {
+              this.mainWindow.send('forceNextRound');
             },
           },
         ],

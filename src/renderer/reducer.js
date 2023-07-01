@@ -40,10 +40,14 @@ export const reducer = (state, action) => {
 
   switch (action.type) {
     case 'SETUP_COMPLETE':
-      newState.players = new Array(action.playerCount).fill({}).map((_, i) => ({
-        name: `Player ${i + 1}`,
-        score: 0,
-      }));
+      if (!newState.players.length) {
+        newState.players = new Array(action.playerCount)
+          .fill({})
+          .map((_, i) => ({
+            name: `Player ${i + 1}`,
+            score: 0,
+          }));
+      }
       newState.game = action.game;
       newState.round = 'firstRound';
       break;
@@ -108,6 +112,27 @@ export const reducer = (state, action) => {
 
     case 'NEXT_IN_CONTROL':
       newState.controlsBoard = (state.controlsBoard + 1) % state.players.length;
+      break;
+
+    case 'NEXT_GAME':
+      newState = {
+        ...initialState,
+        round: 'setup',
+        players: state.players.map((p) => ({ ...p, score: 0 }))
+      };
+      break;
+
+    case 'FORCE_NEXT_ROUND':
+      switch (state.round) {
+        case 'firstRound':
+          newState.round = 'secondRound';
+          break;
+        case 'secondRound':
+          newState.round = 'finalJeopardy';
+          break;
+        default:
+          break;
+      }
       break;
 
     default:

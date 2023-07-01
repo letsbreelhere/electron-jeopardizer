@@ -246,6 +246,12 @@ const ScoreDisplay = () => {
 const MainGame = () => {
   const { state, dispatch } = useContext(ReducerContext);
 
+  useEffect(() => {
+    electron.ipc.on('forceNextRound', () => {
+      dispatch({ type: 'FORCE_NEXT_ROUND' });
+    });
+  }, []);
+
   return (
     <>
       {state.ddClue && <DailyDouble />}
